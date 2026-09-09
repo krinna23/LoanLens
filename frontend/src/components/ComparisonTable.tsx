@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { generateComparison } from '../utils/api';
 import { GitCompare, Loader2, Sparkles, Scale } from 'lucide-react';
 
@@ -86,7 +88,15 @@ export default function ComparisonTable({ sessionId, canCompare }: { sessionId: 
                  <Sparkles size={18} />
                  <h4 className="font-semibold text-lg font-heading">AI Recommendation</h4>
               </div>
-              <p className="text-gray-800 leading-relaxed text-sm">{result.recommendation}</p>
+              <div className="prose prose-sm prose-blue max-w-none
+                prose-headings:font-bold prose-headings:text-gray-900
+                prose-h3:text-sm prose-h3:mt-4 prose-h3:mb-2 prose-h3:first:mt-0
+                prose-p:my-1 prose-p:text-gray-800
+                prose-ul:my-1 prose-ul:pl-4 prose-li:my-0.5 prose-li:text-gray-800
+                prose-strong:text-gray-900 prose-strong:font-semibold
+                prose-hr:my-2">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{result.recommendation}</ReactMarkdown>
+              </div>
               <div className="mt-4 text-xs text-amber-700 bg-amber-50 inline-block px-3 py-1.5 rounded border border-amber-200">
                  Disclaimer: This analysis does not constitute financial advice. Please consult a qualified financial advisor before proceeding.
               </div>

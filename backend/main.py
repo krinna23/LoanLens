@@ -6,7 +6,7 @@ import os
 
 load_dotenv()
 
-from routers import upload, profile, loan_chat, risk_and_comparison
+from routers import upload, profile, loan_chat, risk_and_comparison, financial
 from db.database import engine, Base
 from services.embedder import get_model
 from services.reranker import get_reranker
@@ -36,6 +36,7 @@ app.include_router(upload.router, prefix="/api")
 app.include_router(profile.router, prefix="/api")
 app.include_router(loan_chat.router, prefix="/api")
 app.include_router(risk_and_comparison.router, prefix="/api")
+app.include_router(financial.router, prefix="/api")
 
 
 @app.get("/health")

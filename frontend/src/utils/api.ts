@@ -46,3 +46,50 @@ export async function getRiskSummary(sessionId: string) {
   return res.json();
 }
 
+export async function extractLoanFields(sessionId: string, label: "A" | "B") {
+  const res = await fetch(`${API_BASE_URL}/extract_fields/${sessionId}?agreement_label=${label}`, {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("Failed to extract loan fields");
+  return res.json();
+}
+
+export async function getTrueCost(data: {
+  principal?: number;
+  annual_rate_pct?: number;
+  tenure_months?: number;
+  processing_fee?: number;
+  insurance?: number;
+  other_charges?: number;
+}) {
+  const res = await fetch(`${API_BASE_URL}/true_cost/calculate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Failed to calculate true cost");
+  return res.json();
+}
+
+export async function getPrepaymentScenario(data: {
+  principal: number;
+  annual_rate_pct: number;
+  tenure_months: number;
+  months_paid: number;
+  prepayment_amount: number;
+  prepayment_charge_pct: number;
+}) {
+  const res = await fetch(`${API_BASE_URL}/prepayment_scenario`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Failed to calculate prepayment scenario");
+  return res.json();
+}
+
+export async function getRegulatoryStatus(sessionId: string) {
+  const res = await fetch(`${API_BASE_URL}/regulatory_status/${sessionId}`);
+  if (!res.ok) throw new Error("Failed to fetch regulatory status");
+  return res.json();
+}

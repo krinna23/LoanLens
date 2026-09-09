@@ -111,23 +111,51 @@ async def summarize_agreement(
     doc_text = "\n\n".join(sample["documents"])
 
     # ── 1. Generate plain-language summary ──────────────────────────────────
-    summary_prompt = f"""You are given excerpts from a loan agreement. Write a concise, plain-language summary for a borrower in the following structure (use markdown):
+    summary_prompt = f"""You are given excerpts from a loan agreement. Generate a structured summary for the borrower.
 
-## Key Terms at a Glance
-- **Loan Amount**: (if found, else "Not specified")
-- **Interest Rate**: (if found, else "Not specified")
-- **Tenure**: (if found, else "Not specified")
-- **Processing Fee**: (if found, else "Not specified")
-- **Prepayment Penalty**: (if found, else "Not specified")
-- **EMI**: (if found, else "Not specified")
+OUTPUT RULES — YOU MUST FOLLOW EXACTLY:
+- Use the exact section headings below (###)
+- Use bullet points for all lists
+- Use **bold** for all values (amounts, rates, dates, fees)
+- Use a Markdown table for Fees & Charges
+- If a value is not found in the text, write exactly: **Not specified in the agreement.**
+- Never invent or estimate any number
+- Keep each bullet concise (one idea per bullet)
 
-## What This Agreement Is About
-2–3 plain-language sentences explaining the type of loan and its main purpose.
+Required output format:
 
-## Important Things to Watch Out For
-3–5 bullet points of notable clauses (fees, restrictions, obligations) the borrower should be aware of.
+### Loan Overview
+- **Loan Amount:** (value or Not specified in the agreement.)
+- **Interest Rate:** (value or Not specified in the agreement.)
+- **Tenure:** (value or Not specified in the agreement.)
+- **EMI:** (value or Not specified in the agreement.)
+- **Loan Type:** (e.g. Personal Loan, Home Loan, or Not specified in the agreement.)
+- **Disbursement Mode:** (value or Not specified in the agreement.)
 
-Only use information explicitly present in the text. Do not invent numbers.
+### Key Terms
+- (3–5 most important terms/conditions from the agreement, one per bullet)
+
+### Fees & Charges
+| Charge | Amount | When It Applies |
+|---|---:|---|
+| Processing Fee | (value or Not specified) | (condition) |
+| Prepayment Penalty | (value or Not specified) | (condition) |
+| Late Payment Fee | (value or Not specified) | (condition) |
+| Other charges found | (value) | (condition) |
+
+### Prepayment & Penalties
+- **Prepayment Allowed:** (Yes/No/Partial, or Not specified in the agreement.)
+- **Prepayment Penalty:** (value or Not specified in the agreement.)
+- **Lock-in Period:** (value or Not specified in the agreement.)
+- **Conditions:** (any conditions mentioned)
+
+### Risks & Red Flags
+(List 2–4 notable risks or clauses the borrower should be aware of. If none, write: No significant risks identified in the reviewed excerpts.)
+1. **[Risk Level] Risk —** (brief description)
+2. **[Risk Level] Risk —** (brief description)
+
+### Important Things to Check
+- (3–5 specific things the borrower should verify before signing)
 
 AGREEMENT EXCERPTS:
 {doc_text[:6000]}"""

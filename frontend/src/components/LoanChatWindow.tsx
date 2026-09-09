@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { API_BASE_URL } from '../utils/api';
 import { Send, FileText, Bot, AlertTriangle, ShieldCheck, User as UserIcon, BrainCircuit, ChevronDown, ChevronRight } from 'lucide-react';
 
@@ -44,8 +46,8 @@ export default function LoanChatWindow({ sessionId, mode }: { sessionId: string;
       let assistantContent = '';
       let thoughts = '';
       let blockType = '';
-      let sources = null;
-      let riskFlag = null;
+      let sources: any = null;
+      let riskFlag: any = null;
 
       while (true) {
         if (!reader) break;
@@ -143,8 +145,23 @@ export default function LoanChatWindow({ sessionId, mode }: { sessionId: string;
                   )}
                   
                   {/* Content */}
-                  <div className="prose prose-sm prose-blue max-w-none text-gray-800 leading-relaxed">
-                    {msg.content || (loading && i === messages.length - 1 ? <span className="animate-pulse">Thinking...</span> : "")}
+                  <div className="prose prose-sm prose-blue max-w-none text-gray-800 leading-relaxed
+                    prose-headings:font-bold prose-headings:text-gray-900
+                    prose-h3:text-base prose-h3:mt-4 prose-h3:mb-2 prose-h3:first:mt-0
+                    prose-p:my-1 prose-p:leading-relaxed
+                    prose-ul:my-1 prose-ul:pl-4 prose-li:my-0.5
+                    prose-ol:my-1 prose-ol:pl-4
+                    prose-strong:text-gray-900 prose-strong:font-semibold
+                    prose-table:text-sm prose-table:border-collapse
+                    prose-th:bg-gray-100 prose-th:px-3 prose-th:py-2 prose-th:text-left prose-th:border prose-th:border-gray-300 prose-th:font-semibold
+                    prose-td:px-3 prose-td:py-2 prose-td:border prose-td:border-gray-200
+                    prose-hr:my-3">
+                    {msg.content
+                      ? <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                      : loading && i === messages.length - 1
+                        ? <span className="animate-pulse text-gray-400">Analyzing...</span>
+                        : null
+                    }
                   </div>
 
                   {/* Sources Chips */}
@@ -227,11 +244,11 @@ function ThinkingBlock({ thoughts }: { thoughts: string }) {
     <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
       <button onClick={() => setOpen(!open)} className="flex items-center gap-2 w-full px-3 py-2 text-xs font-semibold text-gray-500 hover:bg-gray-100 transition-colors">
         <BrainCircuit size={14} className="text-blue-500" />
-        AI Reasoning Process
+        Analysis Summary
         {open ? <ChevronDown size={14} className="ml-auto" /> : <ChevronRight size={14} className="ml-auto" />}
       </button>
       {open && (
-        <div className="px-3 py-2 border-t border-gray-200 text-xs text-gray-600 font-mono bg-gray-100/50 max-h-48 overflow-y-auto">
+        <div className="px-3 py-2 border-t border-gray-200 text-xs text-gray-600 bg-gray-100/50 max-h-48 overflow-y-auto leading-relaxed">
           {thoughts}
         </div>
       )}
