@@ -68,7 +68,7 @@ export default function AskTab({ sessionId, mode, onModeChange, hasDocB }: AskTa
       </div>
       
       <div className="flex-1 min-h-0 bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
-        <LoanChatWindow sessionId={sessionId} mode={mode} />
+        <LoanChatWindow key={`${sessionId}-${mode}`} sessionId={sessionId} mode={mode} />
       </div>
     </div>
   );

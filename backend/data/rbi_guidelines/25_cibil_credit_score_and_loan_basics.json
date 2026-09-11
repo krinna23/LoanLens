@@ -1,0 +1,31 @@
+{
+  "url": "https://www.cibil.com/faq/credit-score-and-loan-basics",
+  "label": "25_cibil_credit_score_and_loan_basics",
+  "file_type": "html",
+  "sha256": "9907adb95226db4b8b3a72fcab13b1953321d6c7eade67176e8a774ce79d5d46",
+  "text_sha256": "9f2a55ab571a55660ab5915704b997bcf06c3c26d7972c1046092623d4776349",
+  "downloaded_at": "2026-08-12T19:40:38.058324+00:00",
+  "authority": "TransUnion CIBIL",
+  "source_type": "consumer_education",
+  "document_scope": "consumer_education",
+  "priority": 3,
+  "product": null,
+  "topics": [
+    "credit_score",
+    "loan",
+    "credit_history",
+    "creditworthiness"
+  ],
+  "document_date": null,
+  "last_updated": null,
+  "effective_from": null,
+  "effective_until": null,
+  "applicability_from": null,
+  "implementation_extension_date": null,
+  "applicability": [],
+  "supersedes": [],
+  "superseded_by": [],
+  "special_effective_dates": {},
+  "status": "reference",
+  "source_origin": "manual_override"
+}

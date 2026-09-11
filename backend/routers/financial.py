@@ -107,8 +107,8 @@ Document text:
             "default_conditions": "Could not extract"
         }
 
-@router.post("/true_cost/{session_id}")
-def true_cost(session_id: str, req: TrueCostRequest):
+@router.post("/true_cost/calculate")
+def true_cost(req: TrueCostRequest):
     missing_fields = []
     if req.principal is None: missing_fields.append("principal")
     if req.annual_rate_pct is None: missing_fields.append("annual_rate_pct")

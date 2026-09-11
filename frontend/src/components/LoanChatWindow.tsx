@@ -13,10 +13,26 @@ interface ChatMessage {
 }
 
 export default function LoanChatWindow({ sessionId, mode }: { sessionId: string; mode: 'A' | 'B' }) {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => {
+    if (typeof window !== 'undefined' && sessionId) {
+      try {
+        const saved = sessionStorage.getItem(`loanlens_chat_${sessionId}_${mode}`);
+        if (saved) return JSON.parse(saved);
+      } catch {}
+    }
+    return [];
+  });
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && sessionId && messages.length > 0) {
+      try {
+        sessionStorage.setItem(`loanlens_chat_${sessionId}_${mode}`, JSON.stringify(messages));
+      } catch {}
+    }
+  }, [messages, sessionId, mode]);
 
   // Auto-scroll to bottom of chat
   const scrollToBottom = () => {
@@ -40,6 +56,18 @@ export default function LoanChatWindow({ sessionId, mode }: { sessionId: string;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userMsg, session_id: sessionId, agreement_label: mode }),
       });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        let errMsg = "AI service returned an error.";
+        try {
+          const parsed = JSON.parse(errText);
+          errMsg = parsed.detail || errMsg;
+        } catch {
+          if (errText) errMsg = errText;
+        }
+        throw new Error(errMsg);
+      }
 
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
@@ -95,11 +123,16 @@ export default function LoanChatWindow({ sessionId, mode }: { sessionId: string;
           }
         }
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       setMessages(prev => {
         const newMsgs = [...prev];
-        newMsgs[newMsgs.length - 1].content = "Failed to connect to AI service.";
+        const last = newMsgs[newMsgs.length - 1];
+        if (last && last.role === 'assistant') {
+          if (!last.content) {
+            last.content = err?.message ? `Failed to connect to AI service: ${err.message}` : "Failed to connect to AI service. Please try again.";
+          }
+        }
         return newMsgs;
       });
     } finally {
@@ -164,29 +197,9 @@ export default function LoanChatWindow({ sessionId, mode }: { sessionId: string;
                     }
                   </div>
 
-                  {/* Sources Chips */}
+                  {/* Sources Section */}
                   {msg.sources && (
-                    <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col gap-2">
-                      <span className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
-                        <FileText size={12} /> Sources Referenced
-                      </span>
-                      <div className="flex flex-wrap gap-2">
-                        {msg.sources.agreement_sources?.length > 0 && (
-                          <SourceChip 
-                            title={`Agreement Clause`} 
-                            preview={msg.sources.agreement_sources[0].text} 
-                            type="doc"
-                          />
-                        )}
-                        {msg.sources.rbi_sources?.length > 0 && (
-                          <SourceChip 
-                            title={`RBI Guideline (${msg.sources.rbi_sources[0].status})`} 
-                            preview={msg.sources.rbi_sources[0].text} 
-                            type="rbi"
-                          />
-                        )}
-                      </div>
-                    </div>
+                    <SourcesSection sources={msg.sources} />
                   )}
 
                   {/* Risk Alert */}
@@ -256,22 +269,67 @@ function ThinkingBlock({ thoughts }: { thoughts: string }) {
   )
 }
 
-function SourceChip({ title, preview, type }: { title: string, preview: string, type: 'doc'|'rbi' }) {
-  const [open, setOpen] = useState(false);
-  const isRbi = type === 'rbi';
+function SourcesSection({ sources }: { sources: any }) {
+  const [activeTab, setActiveTab] = useState<'doc' | 'rbi' | null>(null);
+
+  const docSource = sources.agreement_sources?.[0];
+  const rbiSource = sources.rbi_sources?.[0];
+
+  if (!docSource && !rbiSource) return null;
 
   return (
-    <div className={`relative ${isRbi ? 'bg-indigo-50 border-indigo-200 text-indigo-900' : 'bg-slate-50 border-slate-200 text-slate-800'} border rounded-md`}>
-      <button onClick={() => setOpen(!open)} className="px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 hover:opacity-80 transition-opacity">
-        <ShieldCheck size={14} className={isRbi ? "text-indigo-500" : "text-slate-500"} />
-        {title}
-        <ChevronDown size={12} className={`ml-1 transition-transform ${open ? 'rotate-180' : ''}`} />
-      </button>
-      {open && (
-        <div className="absolute z-10 top-full mt-1 left-0 w-72 p-3 bg-white border border-gray-200 shadow-xl rounded-lg text-xs leading-relaxed max-h-64 overflow-y-auto">
-           {preview}
+    <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col gap-2.5">
+      <span className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
+        <FileText size={12} /> Sources Referenced
+      </span>
+      <div className="flex flex-wrap gap-2">
+        {docSource && (
+          <button
+            onClick={() => setActiveTab(activeTab === 'doc' ? null : 'doc')}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md border flex items-center gap-1.5 transition-all ${
+              activeTab === 'doc'
+                ? 'bg-slate-200 border-slate-400 text-slate-900 shadow-sm'
+                : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+            }`}
+          >
+            <FileText size={13} className="text-slate-500" />
+            <span>Agreement Clause</span>
+            <ChevronDown size={12} className={`transition-transform ${activeTab === 'doc' ? 'rotate-180' : ''}`} />
+          </button>
+        )}
+        {rbiSource && (
+          <button
+            onClick={() => setActiveTab(activeTab === 'rbi' ? null : 'rbi')}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-md border flex items-center gap-1.5 transition-all ${
+              activeTab === 'rbi'
+                ? 'bg-indigo-100 border-indigo-400 text-indigo-950 shadow-sm'
+                : 'bg-indigo-50 border-indigo-200 text-indigo-800 hover:bg-indigo-100/70'
+            }`}
+          >
+            <ShieldCheck size={13} className="text-indigo-600" />
+            <span>RBI Guideline {rbiSource.status ? `(${rbiSource.status})` : ''}</span>
+            <ChevronDown size={12} className={`transition-transform ${activeTab === 'rbi' ? 'rotate-180' : ''}`} />
+          </button>
+        )}
+      </div>
+
+      {activeTab === 'doc' && docSource && (
+        <div className="mt-1 w-full bg-slate-50/90 border border-slate-200 rounded-lg p-3 text-xs leading-relaxed text-slate-800 break-words whitespace-pre-wrap">
+          {docSource.filename && (
+            <div className="font-semibold text-slate-600 mb-1">Source: {docSource.filename}</div>
+          )}
+          {docSource.text}
+        </div>
+      )}
+
+      {activeTab === 'rbi' && rbiSource && (
+        <div className="mt-1 w-full bg-indigo-50/70 border border-indigo-200 rounded-lg p-3 text-xs leading-relaxed text-indigo-950 break-words whitespace-pre-wrap">
+          {rbiSource.filename && (
+            <div className="font-semibold text-indigo-700 mb-1">Reference: {rbiSource.filename}</div>
+          )}
+          {rbiSource.text}
         </div>
       )}
     </div>
-  )
+  );
 }

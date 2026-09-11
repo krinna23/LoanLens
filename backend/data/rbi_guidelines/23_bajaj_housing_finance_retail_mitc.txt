@@ -1,0 +1,452 @@
+--- Page 1 ---
+MOST IMPORTANT TERMS AND CONDITIONS (MITC)
+Pursuant to the terms and conditions agreed to between BAJAJ HOUSING FINANCE LIMITED
+(“BHFL” or “the Lender”) and the Borrower (“the Borrower” or “the Customer”) as detailed in the
+Sanction letter, Loan Agreement (“Loan Agreement”), the Top-Up Loan Addendum, Disbursement letter
+and/ or other documents, if any, (collectively referred to as the “Loan Documents”), the Key Terms and
+Conditions are mentioned in this MITC.
+This MITC must be read in conjunction with the terms and conditions of the Loan documents. The Loan
+availed by the Borrower shall be governed by the Loan Documents. In the event of any conflict between.
+the MITC set out herein and the Loan Documents, the terms and conditions of the Loan Documents shall
+prevail. We will be issuing customer login credentials (user id and password) through which customer can
+access Loan Agreement. In case customer is not able to access Loan agreement on portal, a request can
+be placed to provide copy of Loan Agreement and thereafter photocopy of Loan Agreement will be
+facilitated.
+APPLICATION NO.: ___________________________
+NATURE OF LOAN:  Secured Loan  Unsecured Loan
+TYPE OF LOAN:  Fresh/ Purchase  BT  BT+ Top up  Top Up
+1. LOAN AMOUNT:
+.
+2. INTEREST TYPE:
+Floating:  BHFL Floating Reference Rate (FRR) or  Repo Rate
+ Fixed
+Rate of Interest:
+Floating: _____ % p.a. (FRR / Repo ____% +/- ____% spread)
+Fixed: ____% p.a.
+Moratorium or subsidy:
+Date of reset of Interest (if any):
+Modes of communication of changes in Interest Rate: BHFL is entitled to revise the interest
+rate upward or downward at any time and from time to time during the loan tenure at its sole
+discretion, and with due intimation to the Borrower, due to changes in BHFL FRRs or External
+benchmarks (for external benchmark linked loans) or internal policies or due to regulatory
+requirements or on occurrence of event of default, including but not limited to, any delay by
+ Page 1 of 12
+To be signed by all Borrowers/ Co-Borrowers
+
+--- Page 2 ---
+Borrower in providing / executing any documents so required by the Lender to be executed /
+provided by the Borrower, post disbursal of the loan, under the agreement. Any revision in the rate
+of interest is effective prospectively. BHFL shall inform of such change in Interest Rate by sending
+letter to the Borrower on registered communication address/ mailer on registered E mail ID/
+Message on registered Mobile No and/or by updating its Website. Such communication through
+any two alternate modes of communications mentioned above shall constitute sufficient notice to
+the Borrower. If such change is to the disadvantage of the Borrower, the Borrower may within 60
+days and without notice close the Loan account or switch it without paying any extra charges or
+interest.
+3. LOAN TENURE:
+4. PURPOSE OF LOAN:
+ Residential property purchase/ Resale Purchase / Plot + Construction / Self-construction
+(This option is applicable only in case of Housing Loan)
+ Personal Use (For Salaried top-up cases)
+ Business Purpose*
+ Other Use (Please specify) ________________________________
+*The following loans shall be classified as loans for business purpose:
+• Lease Rental Discounting Loans.
+• Loans Against any Property availed for Business Purpose i.e. Working Capital, Debt Consolidation,
+Repayment of Business Loan, Expansion of business, Acquisition of Business asset or any similar
+end usage of funds.
+• Loan for purchase of Non-Residential Properties.
+• Loan against security of Non-Residential Property.
+• Top up loans for Business Purpose i.e. Working Capital, Debt Consolidation, Repayment of
+Business Loan, Expansion of business, Acquisition of Business asset or any similar end usage of
+funds.
+5. INSTALLMENT TYPES: Monthly
+ Term Loan
+ Flexi Term Loan.
+ Flexi Hybrid Loan.
+Page 2 of 12
+
+--- Page 3 ---
+Adjustment of payments done by customer to loan account:
+I. Term loans (including Flexi Term Loans):
+a) Customers making payment through any mode other than the payment gateways (i.e.
+RTGS/NEFT/IMPS/UPI etc.): Credit to the loan account will be done post receipt of the clear funds
+by the Company, (Normally same day except in failure transactions).
+b) Customers making payment through payment gateway (e.g. bill desk): Credit to the loan account
+will be done on receipt of funds by company (normally T+1 day wherein T is debit date to customer
+account).
+c) Banking holidays are excluded for computation of credit period as funds are not received at
+company end hence it can be more than T+1 days. Customers are advised to check specifically
+banking holidays before transferring money through payment gateways since there may be more
+than one banking holiday, the difference in debit to customer bank account and credit may go
+beyond T+1 day.
+d) Transactions where customer account is debited but credit is received with delay at payment
+gateway’s end, credit to customer account would be given on day of receipt of credit in Company’s
+account.
+II. Additional conditions for Flexi Term Loan where Loan amount is greater than Rs.1.00 crore:
+a) For flexi payments cut off timings would be 1 p.m. on normal banking working day.
+b) Amounts transferred prior to 1:00 p.m. on banking working day: Credit to the loan account will be
+done on the same day [except payments through gateway, as mentioned in clause: I(b)].
+c) Amounts transferred post 1:00 p.m. on banking working day: Credit to the loan account will be done
+on T+1 day.
+d) Payments done on banking holiday: Credit to the loan account will be done on the next working
+day. Customers are advised to check specifically banking holidays before transferring money
+through payment gateways since there may be more than one banking holiday, the difference in
+debit to customer bank account and credit may go beyond T+1 day.
+e) Transactions where customer account is debited but credit is received with delay at payment
+gateway’s end, credit to customer account would be given on day of receipt of credit in Company’s
+account.
+6. SECURITY
+• The charge created / to be created against the Property/ies offered as security in favour of
+BHFL and / or any other collateral / security as may be created in favour of BHFL is/are
+considered as the security of the loan, which is detailed in Loan Documents. The Security shall
+mean and include mortgage, guarantee and any other form of security as deemed fit by BHFL
+for securing the loan and submitted by the Borrower accordingly. The Borrower shall produce
+such original/copy of title deeds, documents, reports as may be required by BHFL.
+• The Borrower shall bear all the charges payable for the creation of said security and shall take
+all the steps required for the perfection thereof.
+NOTE: If it is an Unsecured Loan, the aforementioned clauses w.r.t. to security shall not be
+applicable.
+7. INSURANCE OF THE PROPERTY/ BORROWER(S) AND VALUE-ADDED PRODUCTS
+Page 3 of 12
+
+--- Page 4 ---
+• It will be the Borrower’s responsibility to ensure that the Property offered as security, is duly
+insured for an amount equivalent or above the loan value from and against all risks, with BHFL
+as sole beneficiary during the tenure of the loan. The evidence thereof shall be given to BHFL
+whenever required for by BHFL.
+• The claims & coverage will be governed in accordance with the terms & conditions of the
+insurance policy issued by the insurance company.
+• BHFL offers enrolment, only to its customers, under various Group insurance policies in the
+capacity of a Master Policy Holder. The role of BHFL is limited to the effect that it only facilitates
+at the request of the customer to apply for an insurance policy from the insurance company.
+However, the decision to issue an insurance policy, provide requisite insurance coverage and
+settle any future claim under the policy would solely rest with the insurance company only.
+Insurance is the subject matter of solicitation, and the Borrower has considered availing the
+same voluntarily. BHFL holds no warranty and does not make any representation about the
+insurance product, the underlying terms and conditions and/or benefits of the insurance
+product, the manner of processing the claims by the insurance company. Further, BHFL shall
+not be responsible for acceptance or rejection of the request for insurance policy and/or claims,
+the manner of processing of claims etc., in any manner whatsoever. All or any grievances in
+reference to the insurance policy will have to be directly taken up with the insurance company
+only.
+• Value added products are the subject matter of solicitation, and the Borrower has considered
+availing the same voluntarily. The role of BHFL is limited to the effect that it only facilitates at
+the request of the customer to apply for such value-added products from the service providers.
+BHFL holds no warranty and does not make any representation about the products offered,
+the underlying terms and conditions and/or benefits of the products, the manner of processing
+the claims / services by the third party. BHFL shall not be responsible for acceptance or
+rejection of the third-party products offered and/or claims, the manner of processing of claims
+/ services etc. in any manner whatsoever. All or any grievances in reference to the products
+availed will have to be directly taken up with the service provider only.
+8. CONDITIONS FOR DISBURSEMENT OF THE LOAN
+• Submission of all relevant documents as mentioned by BHFL in the Sanction Letter, Loan
+Agreement and other Loan Documents;
+• If it is a secured Loan, the following additional conditions will also have to be satisfied by the
+Customer:
+o Legal & Technical Assessment of the Property;
+o Clear, marketable and unencumbered title of the property offered as security;
+o If the loan is a Home Loan, proof of payment of the own contribution towards the purchase
+of the Property by the Borrower has to be submitted to BHFL;
+o The construction carried out over the Property/ies has been undertaken as per the approved
+plans and as per applicable laws/bye-laws/rules and regulations;
+Page 4 of 12
+
+--- Page 5 ---
+o All required approvals (including, but without limitation, the approved plans and the statutory
+approvals) for the property have been obtained and submitted to BHFL.
+9. REPAYMENT OF THE LOAN
+• The Borrower agrees to repay the EMIs/Monthly Instalments and the other Outstanding Dues
+to BHFL on or before the respective Due Dates by any of the repayment modes as set out in
+the Loan Agreement or the Top-Up Loan Addendum, or in such manner and at such place, as
+may be agreed between the Borrower and BHFL.
+• BHFL may, at the request of the Borrower in writing, agree to change the repayment mode.
+BHFL may, at any time, in its discretion revise the repayment schedule in its sole and absolute
+discretion and notify the Borrower in advance accordingly.
+• The EMI/Monthly Instalment amount shall be arrived at so as to comprise the repayment of the
+Loan Amount and payment of Interest calculated on the basis of the Interest Rate within the
+Loan Tenure. The Borrower agrees to continue paying EMIs/Monthly Instalments until all
+Outstanding Dues under the Loan have been repaid in full to BHFL.
+10. BRIEF PROCEDURE TO BE FOLLOWED FOR RECOVERY OF OVERDUES
+On occurrence of any event of default as mentioned in the Loan Agreement and other Loan
+Documents (“Event of Default”), all outstanding amounts owed by the Borrower to BHFL shall
+become payable forthwith and BHFL reserves the right to undertake such necessary
+processes/measures to enforce its rights under the Loan Agreement and other Loan Documents
+including but not limited to charging Default Interest for the delayed payment, recovery of over
+dues. Further, in case of a secured loan, BHFL will be entitled to enforce the Security in accordance
+with the remedies available under the Law. BHFL also reserves the right to:
+• Accelerate the repayment of the Outstanding Dues including the Loan.
+• Place the Loan on demand or declare all Outstanding Dues payable by the Borrower in respect
+of the Loan to be due and payable immediately.
+• Charge default Interest at the Penal Interest Rate and any other applicable penal charges
+including Bounce Charges.
+• Exercise such other rights and remedies as may be available to the Company under applicable
+law during the pendency of the Loan.
+• Stipulate such other condition/s or take such other action/s as the Company deems fit;
+• Revise the applicable Interest Rate; and/or
+• Has the right to disclose all the loan account details of the Borrower to RBI, NHB, stock
+exchange, Information Utility, auditors, CIBIL and other information bureaus and any other
+Statutory/Regulatory authority and/or any other agency authorised in this behalf pursuant to
+any legal/regulatory requirements.
+Page 5 of 12
+
+--- Page 6 ---
+• At its sole discretion, publish the name, address, photograph, Security details (if applicable)
+and such other information of the Borrower as the BHFL deems fit, in electronic, print and
+social media, and that such publication shall also include the fact of such Event of Default; and
+the Borrower agrees that the BHFL is not responsible or liable for any harm and/ or damage
+caused to the Borrower, whether monetary or otherwise, because of the publication of such
+information.
+• Take possession of the Property, if any, on which Security is so created whether by itself or
+through any of the recovery agents or attorneys as may be appointed by the Lender.
+11. ANNUAL OUTSTANDING BALANCE STATEMENT
+BHFL shall issue the annual outstanding balance statement to the Borrower at the request.
+12. FAIR PRACTICE CODE
+Fair Practice code of the company can be referred online in link provided below:
+https://www.bajajhousingfinance.in/notice-board
+13. CUSTOMER SERVICES
+E mail bhflwecare@bajajfinserv.in
+Call 022 - 45297300
+Online Customer Portal https://myaccount.bajajhousingfinance.in/#/home
+Branch visiting hours 10:00 AM to 6:00 PM
+Queries raised through any of the above-mentioned channels will be actioned and resolved for the
+Borrower within 7 working days.
+(i) loan account statement - Loan Account statement can be downloaded online. Alternatively,
+Customer can obtain the statement by walking into Branch or even by calling on customer
+care number indicated above.
+(ii) photocopy of the title documents – In case if secured loan is availed by Customer by
+submitting title and link documents of the property, photocopy of title and link documents of
+the property, would be provided to customer upon receiving a written request from Customer
+and subject to payment of applicable charges as defined under Fees/ charges section below.
+In case of takeover/balance transfer loans, the request by the customer for photocopy of title
+& link documents will be facilitated subject to receipt of title and link documents from the
+Transferor bank/Financial Institution.
+(iii) return of original title & link documents on closure/transfer of the loan - Original
+Property documents received by the BHFL, would be returned within 20 working days of
+closure of all/any loan outstanding dues with BHFL.
+14. GRIEVANCE REDRESSAL
+Page 6 of 12
+
+--- Page 7 ---
+You will receive an acknowledgement / response within 2 business days of receiving your
+communication
+Level 1 We are committed to resolving customer’s queries / issues within 15 working days (some
+of the scenarios requiring more time will take maximum of 30 days). If customer does not
+hear from us within this time, or not satisfied with our resolution of query, the customer
+may write to us at
+bhflgrievance@bajajfinserv.in
+Level 2 If the customer is not satisfied with the resolution provided at level 1 within 3 working
+days, the customer may post his/her complaint to the head of Customer Experience at
+Bhflcustomerexperience@bajajfinserv.in
+Alternatively, the customers may write to The Head of Customer Experience at:
+Bajaj Housing Finance Limited,
+5th Floor, B2 Cerebrum IT Park,
+Kumar City Kalyani Nagar Pune,
+Maharashtra Pin – 411014
+Level 3 If the customer is not satisfied with the resolution provided at level 2 within 5 working
+days, the customer may post his/her complaint to the Grievance Redressal Officer at
+hema.ratnam@bajajfinserv.in
+Alternatively, the customers may write to Grievance Redressal Officer:
+Hema Ratnam
+Bajaj Housing Finance Limited,
+5th Floor, B2 Cerebrum IT Park,
+Kumar City Kalyani Nagar Pune,
+Maharashtra Pin – 411014
+In case of non-redressal of the complaint to the customer’s satisfaction, within 15 working
+Level 4 days from the above-mentioned matrix, the customer may approach the National Housing
+Bank by lodging its complaint in online mode at the link https://grids.nhbonline.org.in or
+in offline mode by post at the address given below in the prescribed format available
+under the Grievances section at https://nhb.org.in/.
+National Housing Bank,
+Department of Supervision,
+(Complaint Redressal Cell),
+4th Floor, Core-5A, India Habitat Centre,
+Lodhi Road,
+New Delhi- 110003
+15. Grievance Process
+The below-mentioned process is followed when a Borrower writes to
+bhflgrievance@bajajfinserv.in:
+• Customer service associate reads the entire email to understand the customer query /
+complaint
+Page 7 of 12
+
+--- Page 8 ---
+• Customer is out called to understand his stated and unstated requirements
+• Grievance Team coordinates with internal departments to get the complaint resolved as per
+the defined timeline.
+• If the resolution is not possible within the defined TAT of 7 working days, due to internal and
+external dependencies, interim response along with timelines is sent to the Borrower.
+• All queries are closed on e-mail and via telephone call.
+Timely update is sent to the Borrower in case of any extension required in committed timelines.
+16. FEES AND OTHER CHARGES
+The Fees/Charges as mentioned below are subject to change at the sole discretion of Bajaj
+Housing Finance Limited. For any changes, the Borrower(s) are requested to refer to the latest
+Schedule of Charges, mentioned on the BHFL’s website
+https://www.bajajhousingfinance.in/notice-board, which shall stand applicable.
+The Fees/Charges as mentioned below are indicative of the maximum amount payable as such
+Fee/Charge by the Borrower. The Fees/Charges as mentioned in the Loan Documents detail the
+exact amount payable. Unless specifically mentioned, the Fees/Charges paid are non-refundable.
+Sr. Nature of Fee/ Name of Fee/ When Frequency Amount
+No. Charge Charge Payable
+1. Fees for Home Processing At Once Up to 7% of loan amount + GST as
+Loan/ Loan Against Fees Application applicable
+Property
+2. Fees for Top-Up Processing At Once Up to 7% of loan amount + GST as
+Loan Fees Application applicable
+3. Fees for Unsecured Processing At Once Up to 7% of loan amount + GST as
+Loan Fees Application applicable
+4. Penal Interest Additional On Accrual Monthly 24% per annum in addition to the
+Charges / Default Interest applicable Interest Rate on
+Interest Rate overdue amount
+5. Expenses to cover Incidental On incurring On Actuals
+costs Charges expenses
+6. Statutory Charges Stamp As per the Once Applicable as per state laws
+Duty/MODT/M relevant
+OE laws
+7. Switch to Lower Switch Fees On Rate On every Up to 4.5% of principal outstanding
+Rate revision rate + GST as applicable
+revision
+8. Switch in Interest Switch Fees On Interest On every Up to 4.5% of principal outstanding
+Computation (e.g. Computation Switch + GST as applicable
+From BHFL FRR to change
+Repo Rate and
+vice-versa)
+Page 8 of 12
+
+--- Page 9 ---
+9. Mortgage MOF over and At Once Up to Rs. 10000 + GST as
+Origination Fees above Application applicable
+(MOF) (Non- processing
+refundable amount) fees
+– for secured loans
+10. Bounce Charge Misc. On Cheque / Depends on
+Receipts ECS / number of Charges
+Loan Amount (in Rs.)
+NACH Dishonour (in Rs.)
+Dishonour Up to Rs 15 Lakhs 500
+15,00,001 – 30,00,000 1,000
+30,00,001 – 50,00,000 1,500
+50,00,001 – 1,00,00,000 2,000
+1,00,00,001 – 5,00,00,000 3,000
+5,00,00,001 – 10,00,00,000 5,000
+More than 10 crores 10,000
+11. Cheque Swap Miscellaneous At request As and NIL
+charges Receipts when
+12. Security Swap Miscellaneous At request As and NIL
+charges Receipts when
+13. Fees on account of Miscellaneous On incurring As and As per expenses incurred
+External Opinion Receipts expenses when
+14. Reappraisal of loan Processing At Once Mortgage Origination Fees as
+after 6 months from Fees re-application applicable
+sanction
+15. Hard Copy of Miscellaneous At request Per request Up to Rs. 500 per request + GST as
+Statement of Receipts applicable
+Account
+16. Conversion of Conversion On On every Up to 2% of principal outstanding +
+existing loan to new Fees Conversion conversion GST as applicable
+product (Term loan/
+Flexi Term loan/
+Flexi Hybrid loan)
+17. Loan processing Processing On availing Once Up to 2% of loan amount + GST as
+fees - Flexi Loans Fees Flexi Term applicable
+Loan or
+Flexi Hybrid
+Loan
+18. Flexi Annual Annual Applicable Annual Up to 1% of the Sanctioned amount
+Maintenance Maintenance on Flexi Charge during Flexi Interest Only Loan
+Charge Hybrid Loan Repayment Tenure + GST as
+Page 9 of 12
+
+--- Page 10 ---
+Charge – Flexi applicable and up to 1% of the
+Hybrid Loan available Flexi Loan Limit during the
+Flexi Term Loan Tenure + GST as
+applicable
+19. Flexi Annual Annual Applicable Annual Up to 1% of the available Flexi Loan
+Maintenance Maintenance on Flexi Charge Limit + GST as applicable
+Charge – Flexi Charge Term Loan
+Term Loan
+20. CERSAI Charges Charges for At Once For each loan, as per charges levied
+(for Secured Loans) CERSAI application by CERSAI+ GST as applicable
+registration
+21. Secure Fee (for Processing On online Once Rs. 9999 + GST as applicable
+secured loans) Fees application
+22. Fees for Photocopy Miscellaneous At request Per request Minimum fee of Rs. 500/- upto 30
+of Title Documents Receipts pages and Rs. 3/- for each
+(for secured loans) additional page thereafter + GST as
+applicable
+23. Document Retrieval Miscellaneous At request Per request A charge of Rs 1000 (including
+Charges on Closed Receipts GST) is applicable if original
+Loans documents of a closed loan are not
+collected by the borrower within 15
+days from issuance of `Collection of
+original Property Papers’
+communication by BHFL.
+Page 10 of 12
+
+--- Page 11 ---
+PRE-PAYMENT CHARGES
+Floating Rate Loans to Individuals / non- Individuals except for Business purpose
+Term Loan Flexi Term Loan Flexi Hybrid Loan
+Time Period (Months) >1 >1 >1
+Part Prepayment
+Nil Nil Nil
+Charges
+Full Prepayment
+Nil Nil Nil
+Charges
+Floating Rate Loans to Individual / non-Individuals for Business purpose
+Fixed Rate Loans: All Borrowers (including individuals) **
+Term Loan Flexi Term Loan Flexi Hybrid Loan
+Time Period Months) >1 >1 >1
+Part Prepayment 2%* on Part
+Nil Nil
+Charges Payment
+4%* on Sanctioned Amount
+during Flexi Interest Only Loan
+Full Prepayment 4%* on Principal 4%* on the Repayment Tenure; and
+Charges Outstanding available Flexi Loan
+Limit 4%* on the available Flexi Loan
+Limit during Flexi Term Loan
+Tenure
+* GST as applicable will be payable by the Borrower in addition to the Prepayment Charges.
+** Nil for Housing Loan closed by the borrower out of their own sources. The expression “own sources”
+for the purpose means any source other than by borrowing from a bank/ HFC/ NBFC and/or a
+financial institution
+Please refer above section on `Purpose of Loan’ as well for classification on Business purpose or Other
+Purposes of loans availed from BHFL.
+Furthermore, the following conditions would be applicable in addition to the existing terms and conditions:
+A. Conditions for Pre-Payment
+1. Amount of Part Pre-Payment has to be equal to or greater than at least 1 EMI / Monthly Instalment
+2. The Full and/or Part Pre-Payment can be made by the Borrower only after clearance of first
+EMI/Monthly Instalment by the Borrower.
+3. Part Payment / Foreclosure made by the Borrower(s) are accepted throughout the month
+excluding Part Payment/Foreclosure made through cheques / Demand Drafts from the 25th day
+of the current month to the 3rd day of the subsequent month (both days inclusive).
+4. Issuance of Foreclosure letter: 21 days from the date of request.
+5. Part Pre-Payment charges from Flexi Term Loans and/or Flexi Hybrid Loans will be NIL.
+It is hereby agreed that this MITC contains some of the key terms and conditions of the Loan and
+supersedes the MITC if any received by the Borrower on an earlier occasion. Further, the parties hereto
+unconditionally agree to refer and rely upon the terms of the loan agreement and other security documents
+executed/ to be executed by them.
+Page 11 of 12
+
+--- Page 12 ---
+The Borrower acknowledges to have read and understood all the 12 pages containing most important
+terms and conditions and is affixing his / her / its signature / common seal on the first and last page of the
+MITC evidencing the same. The Borrower further agrees and confirms that the Borrowers shall not be
+required to sign at each page of MITC and the signature on the first and last page of the MITC would be
+sufficient.
+The above terms and conditions have been read by the Borrower/s or read over to the Borrower/s by
+Mr./Mrs./Ms.________________________________________ of BHFL and have been understood by the
+Borrower/s.
+**In case of any inconsistency between English and Vernacular Language, English language shall prevail.
+
+(SIGNATURE OR THUMB IMPRESSION OF THE BORROWERS)
+Name of the Borrower(s):
+
+(SIGNATURE OF THE AUTHORIZED REPRESENTATIVE OF BHFL)
+Name of Authorized signatory
+Date Place
+NOTE: Duplicate copy of the MITC should be handed-over to the Borrower/s
+Page 12 of 12

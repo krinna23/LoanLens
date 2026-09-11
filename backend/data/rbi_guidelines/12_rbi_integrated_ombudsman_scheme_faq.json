@@ -1,0 +1,33 @@
+{
+  "url": "https://www.rbi.org.in/commonperson/english/scripts/FAQs.aspx?Id=3407",
+  "label": "12_rbi_integrated_ombudsman_scheme_faq",
+  "file_type": "html",
+  "sha256": "0719e117811937efad04abb82b54471cb78b4513ed0bdb20203a6c56c3dc65b3",
+  "text_sha256": "d82eaf4c1e11673a75e0e713cf08880b4e9e43aaa35367d32b7d60014bb62903",
+  "downloaded_at": "2026-08-12T19:40:28.682535+00:00",
+  "authority": "RBI",
+  "source_type": "consumer_guidance",
+  "document_scope": "consumer_guidance",
+  "priority": 2,
+  "product": null,
+  "topics": [
+    "complaints",
+    "grievance",
+    "ombudsman",
+    "consumer_protection",
+    "bank_complaints",
+    "NBFC_complaints"
+  ],
+  "document_date": null,
+  "last_updated": null,
+  "effective_from": null,
+  "effective_until": null,
+  "applicability_from": null,
+  "implementation_extension_date": null,
+  "applicability": [],
+  "supersedes": [],
+  "superseded_by": [],
+  "special_effective_dates": {},
+  "status": "active",
+  "source_origin": "live_fetch"
+}

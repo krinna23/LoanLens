@@ -52,8 +52,25 @@ def _split_text(text: str, chunk_size: int, overlap: int) -> List[str]:
 def _hard_split(text: str, chunk_size: int, overlap: int) -> List[str]:
     chunks = []
     start = 0
-    while start < len(text):
-        end = start + chunk_size
-        chunks.append(text[start:end])
-        start = end - overlap
+    text_len = len(text)
+    while start < text_len:
+        end = min(start + chunk_size, text_len)
+        if end < text_len:
+            # Snap to nearest space or newline before end to avoid cutting words
+            candidate = text.rfind(" ", start + chunk_size // 2, end)
+            if candidate != -1:
+                end = candidate
+        chunk = text[start:end].strip()
+        if chunk:
+            chunks.append(chunk)
+
+        if end >= text_len:
+            break
+
+        # Calculate next start with overlap, snapping to a word boundary
+        next_start = max(start + 1, end - overlap)
+        candidate_start = text.find(" ", next_start, end)
+        if candidate_start != -1 and candidate_start + 1 < end:
+            next_start = candidate_start + 1
+        start = next_start
     return chunks

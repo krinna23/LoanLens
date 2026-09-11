@@ -1,0 +1,36 @@
+{
+  "url": "https://rbi.org.in/Scripts/NotificationUser.aspx?Id=12527&Mode=0",
+  "label": "08_penal_charges_circular",
+  "file_type": "html",
+  "sha256": "1e23fb1d105e52f80006ae26a0f03bd78fc5c9dbe03e86f7a3d973cca3e1c2ac",
+  "text_sha256": "73b4e4b1d61c4e34cbad5a745e4b243ad9f76de3359924e387a7e56dbfb872b8",
+  "downloaded_at": "2026-08-12T19:40:25.510115+00:00",
+  "authority": "RBI",
+  "source_type": "regulatory",
+  "document_scope": "general_regulation",
+  "priority": 1,
+  "product": null,
+  "topics": [
+    "penal_charges",
+    "default",
+    "late_payment",
+    "penal_interest",
+    "MITC"
+  ],
+  "document_date": "2023-08-18",
+  "last_updated": null,
+  "effective_from": "2024-04-01",
+  "effective_until": null,
+  "applicability_from": "2024-04-01",
+  "implementation_extension_date": "2023-12-29",
+  "applicability": [
+    "all_commercial_banks",
+    "nbfcs",
+    "hfcs"
+  ],
+  "supersedes": [],
+  "superseded_by": [],
+  "special_effective_dates": {},
+  "status": "active",
+  "source_origin": "manual_override"
+}

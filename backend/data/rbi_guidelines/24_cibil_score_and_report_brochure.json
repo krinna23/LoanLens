@@ -1,0 +1,32 @@
+{
+  "url": "https://www.cibil.com/content/dam/cibil/consumer/cibil-score-and-report-brochure-15-10-25.pdf",
+  "label": "24_cibil_score_and_report_brochure",
+  "file_type": "pdf",
+  "sha256": "2932316ee86c687bbe528755a9bc36535e73b31fd16adb2b5ebaadeff9e5fa6d",
+  "text_sha256": "0aa81f80c46413fe89a53fcfdfd1b6da3804f0de810e85942b17e67714af3be3",
+  "downloaded_at": "2026-08-12T19:40:38.035472+00:00",
+  "authority": "TransUnion CIBIL",
+  "source_type": "consumer_education",
+  "document_scope": "consumer_education",
+  "priority": 3,
+  "product": null,
+  "topics": [
+    "CIBIL",
+    "credit_score",
+    "credit_report",
+    "credit_information",
+    "credit_history"
+  ],
+  "document_date": "2025-10-15",
+  "last_updated": null,
+  "effective_from": null,
+  "effective_until": null,
+  "applicability_from": null,
+  "implementation_extension_date": null,
+  "applicability": [],
+  "supersedes": [],
+  "superseded_by": [],
+  "special_effective_dates": {},
+  "status": "reference",
+  "source_origin": "manual_override"
+}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Scale, GitCompare, Sparkles, Loader2 } from 'lucide-react';
+import { Scale, GitCompare, Sparkles, Loader2, ArrowRightLeft } from 'lucide-react';
 import { generateComparison } from '../../utils/api';
 
 interface CompareTabProps {
@@ -9,12 +9,30 @@ interface CompareTabProps {
   canCompare: boolean;
   docAName: string;
   docBName: string;
+  onUploadB?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  uploadingB?: boolean;
 }
 
-export default function CompareTab({ sessionId, canCompare, docAName, docBName }: CompareTabProps) {
+export default function CompareTab({ sessionId, canCompare, docAName, docBName, onUploadB, uploadingB }: CompareTabProps) {
   const [comparing, setComparing] = useState(false);
-  const [result, setResult] = useState<{ comparison: any[]; recommendation: string } | null>(null);
+  const [result, setResult] = useState<{ comparison: any[]; recommendation: string } | null>(() => {
+    if (typeof window !== 'undefined' && sessionId) {
+      try {
+        const saved = sessionStorage.getItem(`loanlens_comparison_${sessionId}`);
+        if (saved) return JSON.parse(saved);
+      } catch {}
+    }
+    return null;
+  });
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (result && typeof window !== 'undefined' && sessionId) {
+      try {
+        sessionStorage.setItem(`loanlens_comparison_${sessionId}`, JSON.stringify(result));
+      } catch {}
+    }
+  }, [result, sessionId]);
 
   const runComparison = async () => {
     setComparing(true);
@@ -22,8 +40,13 @@ export default function CompareTab({ sessionId, canCompare, docAName, docBName }
     try {
       const data = await generateComparison(sessionId);
       setResult(data);
-    } catch (err) {
-      setError("Failed to generate comparison. Please try again.");
+      if (typeof window !== 'undefined') {
+        try {
+          sessionStorage.setItem(`loanlens_comparison_${sessionId}`, JSON.stringify(data));
+        } catch {}
+      }
+    } catch (err: any) {
+      setError(err?.message || "Failed to generate comparison. Please try again.");
     } finally {
       setComparing(false);
     }
@@ -35,8 +58,15 @@ export default function CompareTab({ sessionId, canCompare, docAName, docBName }
         <div className="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mb-4">
           <Scale size={32} className="text-purple-500" />
         </div>
-        <h2 className="text-xl font-bold text-gray-900 mb-2">Upload Agreement B to compare</h2>
-        <p className="text-gray-600 max-w-md">You need two agreements to run a comparison. Upload the second document using the button in the top navigation bar.</p>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">Upload Agreement B to Compare</h2>
+        <p className="text-gray-600 max-w-md mb-6">You need two agreements to run a comparison. Upload your second loan document to see a side-by-side term extraction, differences, and AI recommendation.</p>
+        {onUploadB && (
+          <label className="cursor-pointer bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-xl inline-flex items-center gap-2 transition-colors shadow-md shadow-purple-500/20">
+            {uploadingB ? <Loader2 size={18} className="animate-spin" /> : <ArrowRightLeft size={18} />}
+            <span>{uploadingB ? "Processing Agreement B..." : "Upload Agreement B (PDF / DOCX / TXT)"}</span>
+            <input type="file" className="hidden" accept=".pdf,.txt,.docx" onChange={onUploadB} disabled={uploadingB} />
+          </label>
+        )}
       </div>
     );
   }
@@ -77,32 +107,35 @@ export default function CompareTab({ sessionId, canCompare, docAName, docBName }
           <GitCompare className="text-purple-600" size={20} />
           <h2 className="text-lg font-bold text-gray-900">Side-by-Side Analysis</h2>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-max">
+        <div className="w-full overflow-hidden">
+          <table className="w-full table-fixed text-left border-collapse">
             <thead>
               <tr>
-                <th className="p-4 border-b border-gray-200 bg-white font-semibold text-gray-700 w-1/4">Field</th>
-                <th className="p-4 border-b border-gray-200 bg-blue-50 font-semibold text-blue-900 w-3/8 border-l">{docAName}</th>
-                <th className="p-4 border-b border-gray-200 bg-purple-50 font-semibold text-purple-900 w-3/8 border-l">{docBName}</th>
+                <th className="p-3.5 border-b border-gray-200 bg-white font-semibold text-gray-700 w-1/4">Field</th>
+                <th className="p-3.5 border-b border-gray-200 bg-blue-50 font-semibold text-blue-900 w-[37.5%] border-l break-words">{docAName}</th>
+                <th className="p-3.5 border-b border-gray-200 bg-purple-50 font-semibold text-purple-900 w-[37.5%] border-l break-words">{docBName}</th>
               </tr>
             </thead>
             <tbody>
               {result.comparison.map((row: any, i: number) => {
-                const diff = row.value_a !== row.value_b;
-                const bothNotSpecified = (row.value_a === 'Not specified' || !row.value_a) && (row.value_b === 'Not specified' || !row.value_b);
-                const formatName = (str: string) => str.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                const fieldName = row.field_name || row.field || '';
+                const valA = row.agreement_a_value ?? row.value_a ?? 'Not specified';
+                const valB = row.agreement_b_value ?? row.value_b ?? 'Not specified';
+                const diff = valA !== valB;
+                const bothNotSpecified = (valA === 'Not specified' || !valA) && (valB === 'Not specified' || !valB);
+                const formatName = (str?: string) => (str || '').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                 
                 return (
                   <tr key={i} className={`border-b border-gray-100 ${diff && !bothNotSpecified ? 'bg-yellow-50/50' : ''}`}>
-                    <td className="p-4 font-medium text-sm text-gray-700">
-                      {formatName(row.field)}
+                    <td className="p-3.5 font-medium text-sm text-gray-700 capitalize break-words">
+                      {formatName(fieldName)}
                       {diff && !bothNotSpecified && <span className="ml-2 text-yellow-600 font-bold text-xs" title="Differs">≠</span>}
                     </td>
-                    <td className={`p-4 text-sm border-l border-gray-100 ${row.value_a === 'Not specified' || !row.value_a ? 'text-gray-400 italic' : 'text-gray-800'}`}>
-                      {row.value_a || 'Not specified'}
+                    <td className={`p-3.5 text-sm border-l border-gray-100 break-words whitespace-normal ${valA === 'Not specified' || !valA ? 'text-gray-400 italic' : 'text-gray-800'}`}>
+                      {valA || 'Not specified'}
                     </td>
-                    <td className={`p-4 text-sm border-l border-gray-100 ${row.value_b === 'Not specified' || !row.value_b ? 'text-gray-400 italic' : 'text-gray-800'}`}>
-                      {row.value_b || 'Not specified'}
+                    <td className={`p-3.5 text-sm border-l border-gray-100 break-words whitespace-normal ${valB === 'Not specified' || !valB ? 'text-gray-400 italic' : 'text-gray-800'}`}>
+                      {valB || 'Not specified'}
                     </td>
                   </tr>
                 );
@@ -117,7 +150,7 @@ export default function CompareTab({ sessionId, canCompare, docAName, docBName }
           <Sparkles className="text-blue-600" size={20} />
           <h2 className="text-lg font-bold text-blue-900">LoanLens Analysis</h2>
         </div>
-        <div className="prose prose-sm max-w-none text-blue-900">
+        <div className="prose prose-sm max-w-none text-blue-900 prose-headings:text-blue-950 prose-headings:font-bold prose-p:text-blue-900 prose-li:text-blue-900 prose-strong:text-blue-950">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{result.recommendation}</ReactMarkdown>
         </div>
         <p className="mt-4 text-xs text-blue-500 italic">AI-generated recommendation. Please consult a financial advisor for professional guidance.</p>

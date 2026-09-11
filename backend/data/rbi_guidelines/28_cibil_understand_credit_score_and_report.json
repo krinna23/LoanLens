@@ -1,0 +1,33 @@
+{
+  "url": "https://www.cibil.com/faq/understand-your-credit-score-and-report",
+  "label": "28_cibil_understand_credit_score_and_report",
+  "file_type": "html",
+  "sha256": "32c23654365a39b9fc8e56fe3e72861216e2d9fc4fc1ec2a8fd56ae07a625a23",
+  "text_sha256": "49a169e34b078485f375485ada8d66647d164fd29c29ba23cf4858d45b091ff2",
+  "downloaded_at": "2026-08-12T19:40:38.218943+00:00",
+  "authority": "TransUnion CIBIL",
+  "source_type": "consumer_education",
+  "document_scope": "consumer_education",
+  "priority": 3,
+  "product": null,
+  "topics": [
+    "credit_score",
+    "credit_report",
+    "credit_history",
+    "enquiries",
+    "account_information",
+    "payment_history"
+  ],
+  "document_date": null,
+  "last_updated": null,
+  "effective_from": null,
+  "effective_until": null,
+  "applicability_from": null,
+  "implementation_extension_date": null,
+  "applicability": [],
+  "supersedes": [],
+  "superseded_by": [],
+  "special_effective_dates": {},
+  "status": "reference",
+  "source_origin": "manual_override"
+}

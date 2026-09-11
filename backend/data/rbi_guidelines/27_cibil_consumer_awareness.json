@@ -1,0 +1,33 @@
+{
+  "url": "https://www.cibil.com/faq/consumer-awareness",
+  "label": "27_cibil_consumer_awareness",
+  "file_type": "html",
+  "sha256": "80a6922350d32731ccfcaec6deeaae86637f692b846196ef6126d22ba1f18ec9",
+  "text_sha256": "ad016a35f166dd712f0fa3a031bea4e86d037e9b021b71b0501dbdeae62b551d",
+  "downloaded_at": "2026-08-12T19:40:38.108290+00:00",
+  "authority": "TransUnion CIBIL",
+  "source_type": "consumer_education",
+  "document_scope": "consumer_education",
+  "priority": 3,
+  "product": null,
+  "topics": [
+    "consumer_awareness",
+    "credit",
+    "loans",
+    "credit_report",
+    "disputes",
+    "enquiries"
+  ],
+  "document_date": null,
+  "last_updated": null,
+  "effective_from": null,
+  "effective_until": null,
+  "applicability_from": null,
+  "implementation_extension_date": null,
+  "applicability": [],
+  "supersedes": [],
+  "superseded_by": [],
+  "special_effective_dates": {},
+  "status": "reference",
+  "source_origin": "manual_override"
+}

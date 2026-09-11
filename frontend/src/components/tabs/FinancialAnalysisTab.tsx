@@ -71,14 +71,14 @@ export default function FinancialAnalysisTab({ sessionId, loanFields }: Financia
       
       const pf = parseNumeric(loanFields.processing_fee) || 0;
       const ins = parseNumeric(loanFields.insurance) || 0;
-      const prCharge = parseNumeric(loanFields.prepayment_charges) || 0;
 
       if (p) setTcPrincipal(p);
       if (r) setTcRate(r);
       if (t) setTcTenure(t);
       setTcProcessingFee(pf || '');
       setTcInsurance(ins || '');
-      setPeRate(prCharge || '');
+      // Do not set default large value in peRate; leave clean for user input
+      setPeRate('');
 
       if (p && r && t) {
         setIsCalculated(true);
@@ -235,15 +235,15 @@ export default function FinancialAnalysisTab({ sessionId, loanFields }: Financia
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Amount to prepay (₹)</label>
-            <input type="number" value={peAmount} onChange={e => setPeAmount(e.target.valueAsNumber || '')} className="w-full border rounded-lg p-2" />
+            <input type="number" value={peAmount} placeholder="e.g. 50000" onChange={e => setPeAmount(isNaN(e.target.valueAsNumber) ? '' : e.target.valueAsNumber)} className="w-full border rounded-lg p-2" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">At which month?</label>
-            <input type="number" value={peMonth} onChange={e => setPeMonth(e.target.valueAsNumber || '')} className="w-full border rounded-lg p-2" />
+            <input type="number" value={peMonth} placeholder="e.g. 12" onChange={e => setPeMonth(isNaN(e.target.valueAsNumber) ? '' : e.target.valueAsNumber)} className="w-full border rounded-lg p-2" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Prepayment charge rate (%)</label>
-            <input type="number" value={peRate} onChange={e => setPeRate(e.target.valueAsNumber || '')} className="w-full border rounded-lg p-2" />
+            <input type="number" value={peRate} placeholder="e.g. 2" onChange={e => setPeRate(isNaN(e.target.valueAsNumber) ? '' : e.target.valueAsNumber)} className="w-full border rounded-lg p-2" />
             <span className="text-xs text-gray-500">(Check your agreement for exact rate)</span>
           </div>
         </div>

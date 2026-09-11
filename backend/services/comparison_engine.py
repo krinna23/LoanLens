@@ -1,10 +1,7 @@
 import os
 import json
-from groq import Groq
 from typing import Dict, List
-
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-MODEL = os.getenv("GROQ_TEXT_MODEL", "openai/gpt-oss-120b")
+from services.llm import client, MODEL, AVAILABLE_MODELS
 
 COMPARISON_FIELDS = [
     "loan_amount",
@@ -58,13 +55,16 @@ def extract_loan_fields(agreement_text_sample: str) -> Dict[str, str]:
                 {"role": "user", "content": agreement_text_sample},
             ],
             temperature=0.1,
-            max_tokens=500,
+            max_tokens=2048,
         )
-        raw = response.choices[0].message.content.strip()
-        raw = raw.replace("```json", "").replace("```", "").strip()
+        raw = response.choices[0].message.content or ""
+        raw = raw.strip().replace("```json", "").replace("```", "").strip()
+        if "{" in raw and "}" in raw:
+            raw = raw[raw.find("{"):raw.rfind("}")+1]
         parsed = json.loads(raw)
         return {field: parsed.get(field, "Not specified") for field in COMPARISON_FIELDS}
-    except Exception:
+    except Exception as e:
+        print(f"Error in extract_loan_fields: {e}")
         return {field: "Could not extract" for field in COMPARISON_FIELDS}
 
 
@@ -118,8 +118,13 @@ Base your analysis ONLY on the values shown above. Do not invent or estimate any
             model=MODEL,
             messages=[{"role": "user", "content": prompt}],
             temperature=0.3,
-            max_tokens=300,
+            max_tokens=2048,
         )
-        return response.choices[0].message.content.strip()
-    except Exception:
+        content = (response.choices[0].message.content or "").strip()
+        if content:
+            return content
         return "Unable to generate a comparison summary at this time. Please review the table above manually."
+    except Exception as e:
+        print(f"Error in generate_comparison_recommendation: {e}")
+        return "Unable to generate a comparison summary at this time. Please review the table above manually."
+

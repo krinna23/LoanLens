@@ -62,21 +62,21 @@ export default function ComparisonTable({ sessionId, canCompare }: { sessionId: 
 
         {result && (
           <div className="space-y-6">
-            <div className="overflow-x-auto rounded-lg border border-gray-200">
-              <table className="w-full text-sm text-left">
+            <div className="w-full overflow-hidden rounded-lg border border-gray-200">
+              <table className="w-full text-sm text-left table-fixed border-collapse">
                 <thead className="bg-gray-100 text-gray-700 uppercase tracking-wider text-xs">
                   <tr>
-                    <th className="px-6 py-4 font-semibold border-b border-gray-200 w-1/3">Field</th>
-                    <th className="px-6 py-4 font-semibold border-b border-gray-200 w-1/3 bg-blue-50/50">Agreement A</th>
-                    <th className="px-6 py-4 font-semibold border-b border-gray-200 w-1/3 bg-purple-50/50">Agreement B</th>
+                    <th className="px-4 py-3.5 font-semibold border-b border-gray-200 w-1/4">Field</th>
+                    <th className="px-4 py-3.5 font-semibold border-b border-gray-200 w-[37.5%] bg-blue-50/50 break-words">Agreement A</th>
+                    <th className="px-4 py-3.5 font-semibold border-b border-gray-200 w-[37.5%] bg-purple-50/50 break-words">Agreement B</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {result.comparison.map((row: any) => (
                     <tr key={row.field_name} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 font-medium text-gray-900 capitalize">{row.field_name.replace(/_/g, " ")}</td>
-                      <td className="px-6 py-4 text-gray-700 bg-blue-50/30">{row.agreement_a_value}</td>
-                      <td className="px-6 py-4 text-gray-700 bg-purple-50/30">{row.agreement_b_value}</td>
+                      <td className="px-4 py-3.5 font-medium text-gray-900 capitalize break-words">{row.field_name.replace(/_/g, " ")}</td>
+                      <td className="px-4 py-3.5 text-gray-700 bg-blue-50/30 break-words whitespace-normal">{row.agreement_a_value}</td>
+                      <td className="px-4 py-3.5 text-gray-700 bg-purple-50/30 break-words whitespace-normal">{row.agreement_b_value}</td>
                     </tr>
                   ))}
                 </tbody>

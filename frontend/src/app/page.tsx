@@ -12,7 +12,7 @@ import CompareTab from '@/components/tabs/CompareTab';
 import AskTab from '@/components/tabs/AskTab';
 
 export default function Home() {
-  const [sessionId] = useState<string>(() => uuidv4());
+  const [sessionId, setSessionId] = useState<string>(() => uuidv4());
 
   const [uploadingA, setUploadingA] = useState(false);
   const [uploadingB, setUploadingB] = useState(false);
@@ -31,13 +31,41 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('overview');
   const [chatMode, setChatMode] = useState<'A' | 'B'>('A');
 
+  // Restore session from sessionStorage if available
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const savedSession = sessionStorage.getItem('loanlens_session_id');
+      const savedDocA = sessionStorage.getItem('loanlens_doc_a');
+      if (savedSession && savedDocA) {
+        setSessionId(savedSession);
+        setDocA(JSON.parse(savedDocA));
+        const savedDocB = sessionStorage.getItem('loanlens_doc_b');
+        if (savedDocB) setDocB(JSON.parse(savedDocB));
+        const savedSummaryA = sessionStorage.getItem('loanlens_summary_a');
+        if (savedSummaryA) setSummaryA(savedSummaryA);
+        const savedFields = sessionStorage.getItem('loanlens_loan_fields');
+        if (savedFields) setLoanFields(JSON.parse(savedFields));
+        const savedRisks = sessionStorage.getItem('loanlens_risk_flags');
+        if (savedRisks) setRiskFlags(JSON.parse(savedRisks));
+      } else {
+        sessionStorage.setItem('loanlens_session_id', sessionId);
+      }
+    } catch (e) {
+      console.error('Session restore error:', e);
+    }
+  }, []);
+
   useEffect(() => {
     if (!docA || !sessionId) return;
     const fetchRisk = async () => {
       try {
         const data = await getRiskSummary(sessionId);
         setRiskFlags(data);
-      } catch (err) {
+        if (typeof window !== 'undefined' && data?.length) {
+          sessionStorage.setItem('loanlens_risk_flags', JSON.stringify(data));
+        }
+      } catch {
         // ignore for now
       } finally { 
         setRiskLoading(false); 
@@ -57,7 +85,12 @@ export default function Home() {
     try {
       const res = await uploadAgreement(file, sessionId, label);
       if (label === 'A') {
-        setDocA({ filename: file.name, ...res.document });
+        const newDocA = { filename: file.name, ...res.document };
+        setDocA(newDocA);
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('loanlens_session_id', sessionId);
+          sessionStorage.setItem('loanlens_doc_a', JSON.stringify(newDocA));
+        }
         setActiveTab('overview');
         setSummarizingA(true);
         setLoadingFields(true);
@@ -67,16 +100,31 @@ export default function Home() {
             summarizeAgreement(sessionId, 'A'),
             extractLoanFields(sessionId, 'A'),
           ]);
-          setSummaryA(sumRes.summary);
+          const sumText = sumRes.summary || 'Summary could not be generated. Please use the Ask LoanLens tab to query your agreement.';
+          setSummaryA(sumText);
           setLoanFields(fieldsRes);
-        } catch {
-          setSummaryA('Summary could not be generated. You can still use Ask LoanLens to query your agreement.');
+          if (typeof window !== 'undefined') {
+            sessionStorage.setItem('loanlens_summary_a', sumText);
+            sessionStorage.setItem('loanlens_loan_fields', JSON.stringify(fieldsRes));
+          }
+        } catch (err) {
+          console.error('Summary/fields error:', err);
+          const fallback = 'Summary could not be generated. You can still use Ask LoanLens to query your agreement.';
+          setSummaryA(fallback);
+          setLoanFields(null);
+          if (typeof window !== 'undefined') {
+            sessionStorage.setItem('loanlens_summary_a', fallback);
+          }
         } finally {
           setSummarizingA(false);
           setLoadingFields(false);
         }
       } else {
-        setDocB({ filename: file.name, ...res.document });
+        const newDocB = { filename: file.name, ...res.document };
+        setDocB(newDocB);
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('loanlens_doc_b', JSON.stringify(newDocB));
+        }
         setActiveTab('compare');
       }
     } catch {
@@ -184,11 +232,10 @@ export default function Home() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              disabled={tab.requiresDocB && !docB}
               className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === tab.id
                   ? 'border-blue-600 text-blue-700'
-                  : 'border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed'
+                  : 'border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300'
               }`}
             >
               {tab.icon}
@@ -196,7 +243,7 @@ export default function Home() {
               {tab.id === 'risks' && highRiskCount > 0 && (
                 <span className="bg-red-100 text-red-700 text-xs font-bold px-1.5 py-0.5 rounded-full">{highRiskCount}</span>
               )}
-              {tab.requiresDocB && !docB && <span className="text-xs text-gray-400">(upload B)</span>}
+              {tab.id === 'compare' && !docB && <span className="text-xs text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded-full font-medium">Compare</span>}
             </button>
           ))}
         </nav>
@@ -204,43 +251,45 @@ export default function Home() {
 
       <main className="flex-1 overflow-y-auto">
         <div className="max-w-5xl mx-auto px-6 py-6">
-          {activeTab === 'overview' && (
+          <div className={activeTab === 'overview' ? 'block' : 'hidden'}>
             <OverviewTab 
               sessionId={sessionId}
               loanFields={loanFields}
               loadingFields={loadingFields}
               summaryA={summaryA}
               summarizingA={summarizingA}
-              docAName={docA.filename || "Document A"}
+              docAName={docA?.filename || "Document A"}
               riskFlags={riskFlags}
               onNavigate={setActiveTab}
             />
-          )}
-          {activeTab === 'risks' && (
+          </div>
+          <div className={activeTab === 'risks' ? 'block' : 'hidden'}>
             <RisksTab riskFlags={riskFlags} loading={riskLoading} />
-          )}
-          {activeTab === 'details' && (
+          </div>
+          <div className={activeTab === 'details' ? 'block' : 'hidden'}>
             <LoanDetailsTab loanFields={loanFields} loadingFields={loadingFields} />
-          )}
-          {activeTab === 'financial' && (
+          </div>
+          <div className={activeTab === 'financial' ? 'block' : 'hidden'}>
             <FinancialAnalysisTab sessionId={sessionId} loanFields={loanFields} />
-          )}
-          {activeTab === 'compare' && (
+          </div>
+          <div className={activeTab === 'compare' ? 'block' : 'hidden'}>
             <CompareTab 
               sessionId={sessionId}
               canCompare={!!docB}
               docAName={docA?.filename || "Document A"}
               docBName={docB?.filename || "Document B"}
+              onUploadB={(e) => handleUpload(e, 'B')}
+              uploadingB={uploadingB}
             />
-          )}
-          {activeTab === 'ask' && (
+          </div>
+          <div className={activeTab === 'ask' ? 'block' : 'hidden'}>
             <AskTab 
               sessionId={sessionId}
               mode={chatMode}
               onModeChange={setChatMode}
               hasDocB={!!docB}
             />
-          )}
+          </div>
         </div>
       </main>
     </div>

@@ -1,0 +1,37 @@
+{
+  "url": "https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=12678&Mode=0",
+  "label": "10_rbi_fair_practices_code_interest_2024",
+  "file_type": "html",
+  "sha256": "cd326be51abfa2ce5cc2412c448f71e05f30101fe396c892a5896f679eddeb48",
+  "text_sha256": "9580ee93386a953cd997fe93056a754061960cd90341975565bf39d8215774ec",
+  "downloaded_at": "2026-08-12T19:40:27.913300+00:00",
+  "authority": "RBI",
+  "source_type": "regulatory",
+  "document_scope": "general_regulation",
+  "priority": 1,
+  "product": null,
+  "topics": [
+    "fair_practices",
+    "interest_charging",
+    "loan_disbursement",
+    "interest_start_date",
+    "disclosure",
+    "borrower_protection"
+  ],
+  "document_date": "2024-04-29",
+  "last_updated": null,
+  "effective_from": "2024-04-29",
+  "effective_until": null,
+  "applicability_from": "2024-04-29",
+  "implementation_extension_date": null,
+  "applicability": [
+    "all_commercial_banks",
+    "nbfcs",
+    "hfcs"
+  ],
+  "supersedes": [],
+  "superseded_by": [],
+  "special_effective_dates": {},
+  "status": "active",
+  "source_origin": "live_fetch"
+}

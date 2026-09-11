@@ -1,0 +1,35 @@
+{
+  "url": "https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=11566",
+  "label": "14_rbi_kyc_master_direction",
+  "file_type": "html",
+  "sha256": "f2102b63c06916babc20b4b69ec9341cda0f92d1ba8bdb9a43e4038a62f11ac6",
+  "text_sha256": "b9ac9d453d9a6dad659b2756ef135171615afcfc6302a372648c87eb1b85fd35",
+  "downloaded_at": "2026-08-12T19:40:31.297516+00:00",
+  "authority": "RBI",
+  "source_type": "regulatory",
+  "document_scope": "general_regulation",
+  "priority": 1,
+  "product": null,
+  "topics": [
+    "KYC",
+    "master_direction",
+    "customer_due_diligence",
+    "identity_verification",
+    "AML",
+    "periodic_updation"
+  ],
+  "document_date": "2016-02-25",
+  "last_updated": "2025-08-14",
+  "effective_from": "2016-02-25",
+  "effective_until": null,
+  "applicability_from": "2016-02-25",
+  "implementation_extension_date": null,
+  "applicability": [
+    "all_rbi_regulated_entities"
+  ],
+  "supersedes": [],
+  "superseded_by": [],
+  "special_effective_dates": {},
+  "status": "active",
+  "source_origin": "live_fetch"
+}

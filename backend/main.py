@@ -23,9 +23,15 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="LoanLens API", lifespan=lifespan)
 
+allowed_origins_env = os.getenv("FRONTEND_URL", "http://localhost:3000,http://localhost:3001")
+allowed_origins = [origin.strip() for origin in allowed_origins_env.split(",") if origin.strip()]
+for origin in ["http://localhost:3000", "http://localhost:3001", "http://127.0.0.1:3000", "http://127.0.0.1:3001"]:
+    if origin not in allowed_origins:
+        allowed_origins.append(origin)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[os.getenv("FRONTEND_URL", "*")],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

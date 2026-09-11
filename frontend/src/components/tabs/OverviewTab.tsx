@@ -154,12 +154,16 @@ export default function OverviewTab({
             <Loader2 className="animate-spin text-blue-500" size={20} />
             <span>Analyzing your agreement...</span>
           </div>
-        ) : summaryA ? (
-          <div className="prose prose-sm max-w-none text-gray-700">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{summaryA}</ReactMarkdown>
-          </div>
+        ) : (summaryA !== null && summaryA !== undefined) ? (
+          summaryA.trim() ? (
+            <div className="prose prose-sm prose-gray max-w-none break-words overflow-x-auto prose-headings:text-gray-800 prose-headings:font-bold prose-p:text-gray-700 prose-li:text-gray-700 prose-strong:text-gray-900 prose-table:w-full prose-table:text-gray-700 prose-th:text-gray-800 prose-th:bg-gray-50 prose-th:p-2.5 prose-td:text-gray-700 prose-td:p-2.5">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{summaryA}</ReactMarkdown>
+            </div>
+          ) : (
+            <div className="text-gray-500 italic py-4 text-center">Summary could not be generated. Please try asking in the &quot;Ask LoanLens&quot; tab.</div>
+          )
         ) : (
-          <div className="text-gray-500 italic py-4 text-center">Summary not available.</div>
+          <div className="text-gray-500 italic py-4 text-center">Upload a document to see the summary.</div>
         )}
         
         <div className="mt-6 pt-4 border-t border-gray-100 text-xs text-gray-400 text-center">

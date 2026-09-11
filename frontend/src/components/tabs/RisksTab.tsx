@@ -17,6 +17,37 @@ interface RisksTabProps {
   loading: boolean;
 }
 
+function ClauseEvidence({ text }: { text: string }) {
+  const [expanded, setExpanded] = React.useState(false);
+  const isLong = text.length > 260;
+
+  let displayText = text;
+  if (isLong && !expanded) {
+    const cut = text.slice(0, 250);
+    const lastSpace = cut.lastIndexOf(' ');
+    displayText = (lastSpace > 150 ? cut.slice(0, lastSpace) : cut) + '...';
+  }
+
+  return (
+    <div className="bg-gray-50 border border-gray-100 rounded-lg p-3">
+      <div className="flex items-center justify-between mb-1.5">
+        <p className="text-xs text-gray-500 font-mono">AGREEMENT EVIDENCE</p>
+        {isLong && (
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="text-xs text-blue-600 hover:text-blue-800 font-sans font-medium transition-colors"
+          >
+            {expanded ? 'Show less' : 'Show full clause'}
+          </button>
+        )}
+      </div>
+      <blockquote className="text-sm font-mono text-gray-700 italic break-words whitespace-pre-wrap leading-relaxed">
+        &ldquo;{displayText}&rdquo;
+      </blockquote>
+    </div>
+  );
+}
+
 export default function RisksTab({ riskFlags, loading }: RisksTabProps) {
   const highRisk = riskFlags.filter(r => r.risk_level === 'HIGH').length;
   const medRisk = riskFlags.filter(r => r.risk_level === 'MEDIUM').length;
@@ -112,12 +143,7 @@ export default function RisksTab({ riskFlags, loading }: RisksTabProps) {
               <h3 className="font-bold text-gray-900 mb-1">{flag.deviation_description || "Potential Clause Issue"}</h3>
               <p className="text-gray-600 text-sm mb-4">{flag.reason}</p>
               
-              <div className="bg-gray-50 border border-gray-100 rounded-lg p-3">
-                <p className="text-xs text-gray-500 font-mono mb-1">AGREEMENT EVIDENCE</p>
-                <blockquote className="text-sm font-mono text-gray-700 italic">
-                  &ldquo;{flag.clause_text.length > 200 ? flag.clause_text.substring(0, 200) + '...' : flag.clause_text}&rdquo;
-                </blockquote>
-              </div>
+              <ClauseEvidence text={flag.clause_text} />
               
               {flag.rbi_source_document && (
                 <div className="mt-3 text-xs text-gray-500 flex gap-1">

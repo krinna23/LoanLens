@@ -1,10 +1,7 @@
 import os
 import json
-from groq import Groq
 from typing import List, Dict
-
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-MODEL = os.getenv("GROQ_TEXT_MODEL", "openai/gpt-oss-120b")
+from services.llm import client, MODEL, AVAILABLE_MODELS
 
 RISK_SYSTEM_PROMPT = """You are a financial compliance assistant that compares loan agreement clauses against RBI guidelines.
 
@@ -19,7 +16,7 @@ Rules:
 - HIGH risk: the clause clearly exceeds or violates a specific numeric limit or explicit prohibition in the RBI guideline
 - MEDIUM risk: the clause is ambiguous, lacks required disclosure, or is close to a regulatory limit
 - LOW risk: the clause is compliant or no relevant RBI guideline conflict is found
-- If the matched RBI guideline is marked as WITHDRAWN or SUPERSEDED, you must mention this in the reason field and treat the comparison as informational only, not as active regulatory backing
+- If the matched guideline is marked as WITHDRAWN, SUPERSEDED, HISTORICAL, INFORMATIONAL, or BANK_SPECIFIC, it cannot be treated as an active regulatory violation; assign LOW risk (unless required borrower disclosures are missing) and note the document status in the reason field
 - Never fabricate a specific RBI rule number or percentage that is not present in the provided guideline text
 - Output ONLY the JSON object, no other text
 """

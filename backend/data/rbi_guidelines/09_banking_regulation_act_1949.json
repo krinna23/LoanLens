@@ -1,0 +1,33 @@
+{
+  "url": "https://www.indiacode.nic.in/handle/123456789/1885",
+  "label": "09_banking_regulation_act_1949",
+  "file_type": "html",
+  "sha256": "c6466b700d1cc25f88f01b4a57009e36ba66d286b10d8263f48e1241d145bd0a",
+  "text_sha256": "8815d3e9600a220e45fe7c631e68cc477b5b7cbe1bf7d0455f7a3bc20d39994e",
+  "downloaded_at": "2026-08-12T19:40:27.341441+00:00",
+  "authority": "Government of India",
+  "source_type": "statute",
+  "document_scope": "statute",
+  "priority": 1,
+  "product": null,
+  "topics": [
+    "banking_regulation",
+    "banking_law",
+    "banking_act",
+    "regulated_entities"
+  ],
+  "document_date": "1949-03-10",
+  "last_updated": null,
+  "effective_from": "1949-03-16",
+  "effective_until": null,
+  "applicability_from": "1949-03-16",
+  "implementation_extension_date": null,
+  "applicability": [
+    "all_banks"
+  ],
+  "supersedes": [],
+  "superseded_by": [],
+  "special_effective_dates": {},
+  "status": "active",
+  "source_origin": "live_fetch"
+}

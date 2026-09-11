@@ -1,0 +1,32 @@
+{
+  "url": "https://www.rbi.org.in/commonman/english/scripts/Notification.aspx?Id=1572",
+  "label": "11_rbi_fair_practices_code",
+  "file_type": "html",
+  "sha256": "208de38db5062340f35a3a8f3a027c3992eabe5e580437b29ec1e880f1114841",
+  "text_sha256": "ebf9237116502512104772aad406cbb97fc1ed4b08ff82a7ef6eef1d3e9e5f98",
+  "downloaded_at": "2026-08-12T19:40:28.288740+00:00",
+  "authority": "RBI",
+  "source_type": "historical_reference",
+  "document_scope": "consumer_guidance",
+  "priority": 5,
+  "product": null,
+  "topics": [
+    "fair_practices",
+    "loan_application",
+    "disclosure",
+    "grievance",
+    "borrower_rights"
+  ],
+  "document_date": null,
+  "last_updated": null,
+  "effective_from": null,
+  "effective_until": null,
+  "applicability_from": null,
+  "implementation_extension_date": null,
+  "applicability": [],
+  "supersedes": [],
+  "superseded_by": [],
+  "special_effective_dates": {},
+  "status": "historical_reference",
+  "source_origin": "live_fetch"
+}

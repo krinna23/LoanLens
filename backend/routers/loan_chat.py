@@ -54,62 +54,86 @@ async def loan_chat(request: ChatRequest, db: Session = Depends(get_db)):
     )
 
     def event_stream():
-        # Send source info first (for citation chips on frontend)
-        sources = {
-            "agreement_sources": [
-                {
-                    "filename": c["metadata"].get("filename"),
-                    "text": c["text"][:200],
-                    "score": c.get("rerank_score", c["score"]),
-                }
-                for c in retrieval["agreement_chunks"]
-            ],
-            "rbi_sources": [
-                {
-                    "filename": c["metadata"].get("filename"),
-                    "status": c["metadata"].get("document_status", "ACTIVE"),
-                    "text": c["text"][:200],
-                    "score": c.get("rerank_score", c["score"]),
-                }
-                for c in retrieval["rbi_chunks"]
-            ],
-        }
-        yield f"data: {json.dumps({'type': 'sources', **sources})}\n\n"
+        try:
+            def _clean_source_snippet(text: str, max_chars: int = 800) -> str:
+                if not text:
+                    return ""
+                s = text.strip()
+                if len(s) <= max_chars:
+                    return s
+                cut = s[:max_chars]
+                last_space = cut.rfind(" ")
+                if last_space > max_chars // 2:
+                    return cut[:last_space].strip() + "..."
+                return cut.strip() + "..."
 
-        # Stream the LLM answer
-        for chunk in stream_response(prompt):
-            yield f"data: {json.dumps(chunk)}\n\n"
+            # Send source info first (for citation chips on frontend)
+            sources = {
+                "agreement_sources": [
+                    {
+                        "filename": c["metadata"].get("filename"),
+                        "text": _clean_source_snippet(c["text"]),
+                        "score": c.get("rerank_score", c["score"]),
+                    }
+                    for c in retrieval["agreement_chunks"]
+                ],
+                "rbi_sources": [
+                    {
+                        "filename": c["metadata"].get("filename"),
+                        "status": c["metadata"].get("document_status", "ACTIVE"),
+                        "text": _clean_source_snippet(c["text"]),
+                        "score": c.get("rerank_score", c["score"]),
+                    }
+                    for c in retrieval["rbi_chunks"]
+                ],
+            }
+            yield f"data: {json.dumps({'type': 'sources', **sources})}\n\n"
 
-        # Background: classify risk on the single best-matched clause pair
-        # (kept simple/synchronous for this project scope — could be moved
-        # to a background task queue in a larger deployment)
-        if retrieval["agreement_chunks"] and retrieval["rbi_chunks"]:
-            top_clause = retrieval["agreement_chunks"][0]
-            top_rbi = retrieval["rbi_chunks"][0]
+            # Stream the LLM answer
+            for chunk in stream_response(prompt):
+                yield f"data: {json.dumps(chunk)}\n\n"
 
-            risk_result = classify_clause_risk(
-                clause_text=top_clause["text"],
-                rbi_guideline_text=top_rbi["text"],
-                rbi_document_status=top_rbi["metadata"].get("document_status", "ACTIVE"),
-            )
+            # Background: classify risk on the single best-matched clause pair
+            if retrieval["agreement_chunks"] and retrieval["rbi_chunks"]:
+                try:
+                    top_clause = retrieval["agreement_chunks"][0]
+                    top_rbi = retrieval["rbi_chunks"][0]
 
-            flag = ClauseRiskFlag(
-                id=generate_id(),
-                session_id=request.session_id,
-                document_id=top_clause["metadata"].get("doc_id", ""),
-                clause_text=top_clause["text"][:1000],
-                rbi_rule_matched=top_rbi["text"][:1000],
-                rbi_source_document=top_rbi["metadata"].get("filename"),
-                rbi_document_status=top_rbi["metadata"].get("document_status", "ACTIVE"),
-                deviation_description=risk_result["deviation_description"],
-                risk_level=risk_result["risk_level"],
-                reason=risk_result["reason"],
-            )
-            db.add(flag)
-            db.commit()
+                    risk_result = classify_clause_risk(
+                        clause_text=top_clause["text"],
+                        rbi_guideline_text=top_rbi["text"],
+                        rbi_document_status=top_rbi["metadata"].get("document_status", "ACTIVE"),
+                    )
 
-            yield f"data: {json.dumps({'type': 'risk_flag', 'risk_level': risk_result['risk_level'], 'deviation_description': risk_result['deviation_description']})}\n\n"
+                    from db.database import SessionLocal
+                    db_session = SessionLocal()
+                    try:
+                        flag = ClauseRiskFlag(
+                            id=generate_id(),
+                            session_id=request.session_id,
+                            document_id=top_clause["metadata"].get("doc_id", ""),
+                            clause_text=top_clause["text"][:1000],
+                            rbi_rule_matched=top_rbi["text"][:1000],
+                            rbi_source_document=top_rbi["metadata"].get("filename"),
+                            rbi_document_status=top_rbi["metadata"].get("document_status", "ACTIVE"),
+                            deviation_description=risk_result["deviation_description"],
+                            risk_level=risk_result["risk_level"],
+                            reason=risk_result["reason"],
+                        )
+                        db_session.add(flag)
+                        db_session.commit()
+                    finally:
+                        db_session.close()
 
-        yield "data: [DONE]\n\n"
+                    yield f"data: {json.dumps({'type': 'risk_flag', 'risk_level': risk_result['risk_level'], 'deviation_description': risk_result['deviation_description']})}\n\n"
+                except Exception as risk_err:
+                    print(f"Risk classification background error: {risk_err}")
+
+            yield "data: [DONE]\n\n"
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            yield f"data: {json.dumps({'type': 'text', 'text': f'\\n\\n**AI Service Error:** {str(e)}'})}\n\n"
+            yield "data: [DONE]\n\n"
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")

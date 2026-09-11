@@ -23,13 +23,13 @@ async def upload_agreement(
     agreement_label: str = Form("A"),  # "A" or "B" for comparison mode
     db: Session = Depends(get_db),
 ):
-    if not is_allowed_file(file.content_type):
+    if not is_allowed_file(file.content_type, file.filename):
         raise HTTPException(status_code=400, detail=f"Unsupported file type: {file.content_type}")
 
     if agreement_label not in ("A", "B"):
         raise HTTPException(status_code=400, detail="agreement_label must be 'A' or 'B'")
 
-    file_type = get_file_extension(file.content_type)
+    file_type = get_file_extension(file.content_type, file.filename)
     doc_id = generate_id()
 
     save_path = build_storage_path(STORAGE_PATH, doc_id, file_type)
@@ -168,26 +168,30 @@ AGREEMENT EXCERPTS:
                 {"role": "user", "content": summary_prompt},
             ],
             temperature=0.2,
-            max_tokens=800,
+            max_tokens=2500,
         )
         summary_text = summary_resp.choices[0].message.content.strip()
+        if not summary_text:
+            summary_text = "Summary could not be generated from this document. The document may be too short or contain insufficient text. Please use the 'Ask LoanLens' tab to query your agreement directly."
     except Exception as e:
-        summary_text = f"Summary could not be generated: {str(e)}"
+        summary_text = f"Summary generation failed: {str(e)}. Please use the 'Ask LoanLens' tab to query your agreement directly."
 
     # ── 2. Auto risk-scan top clauses vs RBI knowledge base ─────────────────
     risk_flags_added = 0
     try:
         rbi_col = get_collection(RBI_KNOWLEDGE_COLLECTION)
         if rbi_col.count() > 0:
-            # For each of the first 5 chunks, embed + find the best RBI match
-            clauses_to_scan = sample["documents"][:5]
-            metadatas = sample["metadatas"][:5]
+            # For each of the first 10 chunks, embed + find the best RBI match
+            clauses_to_scan = sample["documents"][:10]
+            metadatas = sample["metadatas"][:10]
             for i, clause_text in enumerate(clauses_to_scan):
                 clause_embedding = embed_query(clause_text)
-                rbi_matches = query_collection(RBI_KNOWLEDGE_COLLECTION, clause_embedding, n_results=1)
+                rbi_matches = query_collection(RBI_KNOWLEDGE_COLLECTION, clause_embedding, n_results=5)
                 if not rbi_matches:
                     continue
-                top_rbi = rbi_matches[0]
+                # Prefer ACTIVE documents over withdrawn/informational
+                active_matches = [m for m in rbi_matches if m.get("metadata", {}).get("document_status") == "ACTIVE"]
+                top_rbi = active_matches[0] if active_matches else rbi_matches[0]
                 risk_result = classify_clause_risk(
                     clause_text=clause_text,
                     rbi_guideline_text=top_rbi["text"],

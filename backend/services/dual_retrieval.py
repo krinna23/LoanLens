@@ -40,7 +40,7 @@ def build_dual_context_prompt(query: str, agreement_chunks: list, rbi_chunks: li
     ) or "No relevant clause found in the uploaded agreement."
 
     rbi_context = "\n\n---\n\n".join(
-        f"[RBI GUIDELINE — {c['metadata'].get('filename', 'guideline')} — status: {c['metadata'].get('document_status', 'ACTIVE')}]\n{c['text']}"
+        f"[REGULATORY / KNOWLEDGE BASE REFERENCE — {c['metadata'].get('title') or c['metadata'].get('filename', 'guideline')} — Authority: {c['metadata'].get('authority', 'RBI')} — Status: {c['metadata'].get('document_status', 'ACTIVE')}]\n{c['text']}"
         for c in rbi_chunks
     ) or "No directly relevant RBI guideline found for this query."
 
@@ -69,12 +69,13 @@ USER FINANCIAL PROFILE (use this to personalize your answer where relevant):
 User question: {query}
 
 Instructions:
-- Compare the user's agreement clause(s) against the RBI guideline(s) explicitly
-- If an RBI guideline is marked as WITHDRAWN or SUPERSEDED, clearly tell the user this specific regulation is no longer current and should be treated as historical/reference context only, not active law
+- Compare the user's agreement clause(s) against the RBI guideline(s) / regulatory standards explicitly
+- If an RBI guideline is marked as WITHDRAWN, SUPERSEDED, or HISTORICAL, clearly tell the user this specific regulation is no longer current and should be treated as historical/reference context only, not active law
+- If a document is from a specific bank (e.g. Bank MITC), treat it as an example of commercial market terms, not a binding RBI statutory mandate
 - Explain in simple, plain language — avoid legal jargon
 - If the financial profile is provided, personalize the answer (e.g. EMI as % of income)
 - Never present yourself as giving definitive legal or financial advice — always suggest consulting a qualified advisor for final decisions
-- Cite sources naturally (e.g. "according to your loan agreement" or "per RBI's penal charges guideline") — never repeat internal labels like [USER AGREEMENT] or [RBI GUIDELINE] in your visible answer
+- Cite sources naturally (e.g. "according to your loan agreement" or "per RBI's circular on penal charges") — never repeat internal prompt tags in your visible answer
 
 CRITICAL — OUTPUT FORMAT:
 Your response MUST be structured Markdown. Never return a paragraph of plain text.

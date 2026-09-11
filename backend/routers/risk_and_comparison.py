@@ -39,8 +39,11 @@ def generate_comparison(session_id: str, db: Session = Depends(get_db)):
     sample_a = collection_a.peek(limit=15)
     sample_b = collection_b.peek(limit=15)
 
-    text_a = "\n\n".join(sample_a["documents"])
-    text_b = "\n\n".join(sample_b["documents"])
+    docs_a = sample_a.get("documents") or []
+    docs_b = sample_b.get("documents") or []
+
+    text_a = "\n\n".join(docs_a)
+    text_b = "\n\n".join(docs_b)
 
     fields_a = extract_loan_fields(text_a)
     fields_b = extract_loan_fields(text_b)
@@ -50,12 +53,14 @@ def generate_comparison(session_id: str, db: Session = Depends(get_db)):
     # Clear old comparison rows for this session, then store fresh ones
     db.query(LoanComparison).filter(LoanComparison.session_id == session_id).delete()
     for row in comparison_rows:
+        val_a = str(row["agreement_a_value"])[:255] if row.get("agreement_a_value") is not None else None
+        val_b = str(row["agreement_b_value"])[:255] if row.get("agreement_b_value") is not None else None
         db.add(LoanComparison(
             id=generate_id(),
             session_id=session_id,
             field_name=row["field_name"],
-            agreement_a_value=row["agreement_a_value"],
-            agreement_b_value=row["agreement_b_value"],
+            agreement_a_value=val_a,
+            agreement_b_value=val_b,
         ))
     db.commit()
 

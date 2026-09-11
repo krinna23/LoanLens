@@ -3,7 +3,18 @@ from groq import Groq
 from typing import List, Generator
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-MODEL = os.getenv("GROQ_TEXT_MODEL", "openai/gpt-oss-120b")
+MODEL = os.getenv("GROQ_TEXT_MODEL", "qwen/qwen3.8-27b")
+
+MODEL_CANDIDATES = [
+    MODEL,
+    "qwen/qwen3.8-27b",
+    "qwen/qwen3.6-27b",
+    "openai/gpt-oss-20b",
+    "groq/compound-mini",
+    "openai/gpt-oss-120b",
+]
+# Remove duplicates while maintaining order
+AVAILABLE_MODELS = list(dict.fromkeys(MODEL_CANDIDATES))
 
 SYSTEM_PROMPT = """You are LoanLens, an AI assistant that analyzes loan agreements and explains financial and legal terms clearly for borrowers.
 
@@ -110,16 +121,28 @@ First, briefly note which sources were used and why they are relevant (1-2 sente
 
     yield {"type": "block_start", "block_type": "thinking"}
 
-    stream = client.chat.completions.create(
-        model=MODEL,
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": full_prompt},
-        ],
-        stream=True,
-        max_tokens=2048,
-        temperature=0.2,
-    )
+    stream = None
+    last_error = None
+    for candidate_model in AVAILABLE_MODELS:
+        try:
+            stream = client.chat.completions.create(
+                model=candidate_model,
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": full_prompt},
+                ],
+                stream=True,
+                max_tokens=2048,
+                temperature=0.2,
+            )
+            break
+        except Exception as err:
+            last_error = err
+            print(f"Model {candidate_model} failed ({err}), attempting fallback...")
+            continue
+
+    if stream is None:
+        raise last_error or RuntimeError("All AI models failed to respond.")
 
     full_text = ""
     in_thinking = True

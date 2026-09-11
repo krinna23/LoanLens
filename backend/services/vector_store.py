@@ -33,20 +33,29 @@ def get_agreement_collection_name(session_id: str, agreement_label: str = "A") -
 
 
 def add_chunks(collection_name: str, chunks: List[dict]):
+    if not chunks:
+        return
     collection = get_collection(collection_name)
-    collection.add(
-        ids=[f"{c['doc_id']}_chunk_{c['chunk_index']}" for c in chunks],
+    ids = [c.get("chunk_id") or f"{c['doc_id']}_chunk_{c['chunk_index']}" for c in chunks]
+    metadatas = [
+        {
+            "doc_id": str(c.get("doc_id", "")),
+            "filename": str(c.get("filename", "")),
+            "chunk_index": int(c.get("chunk_index", 0)),
+            "document_status": str(c.get("document_status", "ACTIVE")),
+            "authority": str(c.get("authority", "RBI")),
+            "source": str(c.get("source", "RBI")),
+            "document_type": str(c.get("document_type", "Circular")),
+            "topic": str(c.get("topic", "")),
+            "title": str(c.get("title", "")),
+        }
+        for c in chunks
+    ]
+    collection.upsert(
+        ids=ids,
         embeddings=[c["embedding"] for c in chunks],
         documents=[c["text"] for c in chunks],
-        metadatas=[
-            {
-                "doc_id": c["doc_id"],
-                "filename": c["filename"],
-                "chunk_index": c["chunk_index"],
-                "document_status": c.get("document_status", "ACTIVE"),
-            }
-            for c in chunks
-        ],
+        metadatas=metadatas,
     )
 
 
