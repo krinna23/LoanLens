@@ -47,25 +47,32 @@ def extract_loan_fields(agreement_text_sample: str) -> Dict[str, str]:
     chunks (e.g. from a broad retrieval of the agreement), not the full document,
     to stay within a reasonable prompt size.
     """
-    try:
-        response = client.chat.completions.create(
-            model=MODEL,
-            messages=[
-                {"role": "system", "content": EXTRACTION_SYSTEM_PROMPT},
-                {"role": "user", "content": agreement_text_sample},
-            ],
-            temperature=0.1,
-            max_tokens=2048,
-        )
-        raw = response.choices[0].message.content or ""
-        raw = raw.strip().replace("```json", "").replace("```", "").strip()
-        if "{" in raw and "}" in raw:
-            raw = raw[raw.find("{"):raw.rfind("}")+1]
-        parsed = json.loads(raw)
-        return {field: parsed.get(field, "Not specified") for field in COMPARISON_FIELDS}
-    except Exception as e:
-        print(f"Error in extract_loan_fields: {e}")
-        return {field: "Could not extract" for field in COMPARISON_FIELDS}
+    last_error = None
+    for candidate_model in AVAILABLE_MODELS:
+        try:
+            response = client.chat.completions.create(
+                model=candidate_model,
+                messages=[
+                    {"role": "system", "content": EXTRACTION_SYSTEM_PROMPT},
+                    {"role": "user", "content": agreement_text_sample[:8000]},
+                ],
+                temperature=0.1,
+                max_tokens=600,
+                response_format={"type": "json_object"}
+            )
+            raw = response.choices[0].message.content or ""
+            raw = raw.strip().replace("```json", "").replace("```", "").strip()
+            if "{" in raw and "}" in raw:
+                raw = raw[raw.find("{"):raw.rfind("}")+1]
+            parsed = json.loads(raw)
+            return {field: parsed.get(field, "Not specified") for field in COMPARISON_FIELDS}
+        except Exception as e:
+            last_error = e
+            print(f"Model {candidate_model} failed for extract_loan_fields: {e}")
+            continue
+
+    print(f"All models failed in extract_loan_fields: {last_error}")
+    return {field: "Not specified" for field in COMPARISON_FIELDS}
 
 
 def build_comparison_rows(fields_a: Dict[str, str], fields_b: Dict[str, str]) -> List[dict]:

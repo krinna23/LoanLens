@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from services.vector_store import get_collection, get_agreement_collection_name
-from services.llm import client as groq_client, MODEL
+from services.llm import client as groq_client, MODEL, AVAILABLE_MODELS
 from db.database import get_db
 from db.models import ClauseRiskFlag
 
@@ -40,7 +40,8 @@ def extract_fields(session_id: str, agreement_label: str = "A"):
         sample = collection.peek(limit=20)
         chunks = sample.get("documents", [])
 
-        context = "\n\n".join(chunks)
+        # Limit context to avoid hitting Groq tokens-per-minute limits
+        context = "\n\n".join(chunks)[:8000]
         
         prompt = """You are a financial document analyst. Extract specific loan terms from the provided agreement text.
 
@@ -68,43 +69,61 @@ Return ONLY a JSON object with these exact keys (never guess, always use "Not sp
 Document text:
 """ + context
 
-        response = groq_client.chat.completions.create(
-            model=MODEL,
-            messages=[
-                {"role": "system", "content": "You are a precise JSON extractor. Output ONLY JSON."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.0
-        )
-        
-        content = response.choices[0].message.content.strip()
-        if content.startswith("```json"):
-            content = content[7:]
-        if content.startswith("```"):
-            content = content[3:]
-        if content.endswith("```"):
-            content = content[:-3]
-            
-        return json.loads(content)
+        last_error = None
+        for candidate_model in AVAILABLE_MODELS:
+            try:
+                response = groq_client.chat.completions.create(
+                    model=candidate_model,
+                    messages=[
+                        {"role": "system", "content": "You are a precise JSON extractor. Output ONLY a valid JSON object."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=0.0,
+                    max_tokens=600,
+                    response_format={"type": "json_object"}
+                )
+                
+                content = response.choices[0].message.content.strip()
+                if "{" in content and "}" in content:
+                    content = content[content.find("{"):content.rfind("}")+1]
+                    
+                parsed = json.loads(content)
+                # Ensure all expected keys exist
+                expected_keys = [
+                    "loan_amount", "loan_type", "interest_rate", "interest_type", "tenure", "emi",
+                    "disbursement_mode", "processing_fee", "insurance", "other_charges",
+                    "late_payment_charges", "prepayment_charges", "prepayment_allowed",
+                    "lock_in_period", "collateral", "rate_reset_conditions", "default_conditions"
+                ]
+                return {k: parsed.get(k, "Not specified") for k in expected_keys}
+            except Exception as model_err:
+                last_error = model_err
+                print(f"Model {candidate_model} failed for extract_fields ({model_err}), trying next candidate...")
+                continue
+
+        if last_error:
+            raise last_error
+
     except Exception as e:
+        print(f"Error in extract_fields: {e}")
         return {
-            "loan_amount": "Could not extract",
-            "loan_type": "Could not extract",
-            "interest_rate": "Could not extract",
-            "interest_type": "Could not extract",
-            "tenure": "Could not extract",
-            "emi": "Could not extract",
-            "disbursement_mode": "Could not extract",
-            "processing_fee": "Could not extract",
-            "insurance": "Could not extract",
-            "other_charges": "Could not extract",
-            "late_payment_charges": "Could not extract",
-            "prepayment_charges": "Could not extract",
-            "prepayment_allowed": "Could not extract",
-            "lock_in_period": "Could not extract",
-            "collateral": "Could not extract",
-            "rate_reset_conditions": "Could not extract",
-            "default_conditions": "Could not extract"
+            "loan_amount": "Not specified",
+            "loan_type": "Not specified",
+            "interest_rate": "Not specified",
+            "interest_type": "Not specified",
+            "tenure": "Not specified",
+            "emi": "Not specified",
+            "disbursement_mode": "Not specified",
+            "processing_fee": "Not specified",
+            "insurance": "Not specified",
+            "other_charges": "Not specified",
+            "late_payment_charges": "Not specified",
+            "prepayment_charges": "Not specified",
+            "prepayment_allowed": "Not specified",
+            "lock_in_period": "Not specified",
+            "collateral": "Not specified",
+            "rate_reset_conditions": "Not specified",
+            "default_conditions": "Not specified"
         }
 
 @router.post("/true_cost/calculate")

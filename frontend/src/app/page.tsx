@@ -11,6 +11,65 @@ import FinancialAnalysisTab from '@/components/tabs/FinancialAnalysisTab';
 import CompareTab from '@/components/tabs/CompareTab';
 import AskTab from '@/components/tabs/AskTab';
 
+function parseFieldsFromSummary(summary: string): Record<string, string> {
+  const fields: Record<string, string> = {};
+  if (!summary) return fields;
+
+  const patterns: [string, RegExp][] = [
+    ['loan_amount', /[-*]\s*\*{0,2}Loan Amount:\*{0,2}\s*([^\n\r]+)/i],
+    ['interest_rate', /[-*]\s*\*{0,2}Interest Rate:\*{0,2}\s*([^\n\r]+)/i],
+    ['tenure', /[-*]\s*\*{0,2}Tenure:\*{0,2}\s*([^\n\r]+)/i],
+    ['emi', /[-*]\s*\*{0,2}EMI:\*{0,2}\s*([^\n\r]+)/i],
+    ['loan_type', /[-*]\s*\*{0,2}Loan Type:\*{0,2}\s*([^\n\r]+)/i],
+    ['disbursement_mode', /[-*]\s*\*{0,2}Disbursement Mode:\*{0,2}\s*([^\n\r]+)/i],
+    ['prepayment_allowed', /[-*]\s*\*{0,2}Prepayment Allowed:\*{0,2}\s*([^\n\r]+)/i],
+    ['prepayment_charges', /[-*]\s*\*{0,2}Prepayment Penalty:\*{0,2}\s*([^\n\r]+)/i],
+    ['lock_in_period', /[-*]\s*\*{0,2}Lock-in Period:\*{0,2}\s*([^\n\r]+)/i],
+  ];
+
+  for (const [key, regex] of patterns) {
+    const match = summary.match(regex);
+    if (match && match[1]) {
+      let val = match[1].replace(/^\*+|\*+$/g, '').trim();
+      if (val && !val.toLowerCase().includes('not specified in the agreement')) {
+        fields[key] = val;
+      }
+    }
+  }
+
+  const processingMatch = summary.match(/\|\s*Processing Fee\s*\|\s*([^|]+)\|/i);
+  if (processingMatch && processingMatch[1]) {
+    const pf = processingMatch[1].replace(/^\*+|\*+$/g, '').trim();
+    if (pf && !pf.toLowerCase().includes('not specified')) {
+      fields['processing_fee'] = pf;
+    }
+  }
+
+  const lateMatch = summary.match(/\|\s*Late Payment Fee\s*\|\s*([^|]+)\|/i);
+  if (lateMatch && lateMatch[1]) {
+    const lpf = lateMatch[1].replace(/^\*+|\*+$/g, '').trim();
+    if (lpf && !lpf.toLowerCase().includes('not specified')) {
+      fields['late_payment_charges'] = lpf;
+    }
+  }
+
+  return fields;
+}
+
+function mergeFieldsWithSummary(fields: any, summaryText?: string | null) {
+  if (!summaryText) return fields;
+  const summaryParsed = parseFieldsFromSummary(summaryText);
+  const result = { ...(fields || {}) };
+
+  for (const [k, v] of Object.entries(summaryParsed)) {
+    const currentVal = result[k];
+    if (!currentVal || currentVal === 'Could not extract' || currentVal === 'Not specified') {
+      result[k] = v;
+    }
+  }
+  return result;
+}
+
 export default function Home() {
   const [sessionId, setSessionId] = useState<string>(() => uuidv4());
 
@@ -45,7 +104,20 @@ export default function Home() {
         const savedSummaryA = sessionStorage.getItem('loanlens_summary_a');
         if (savedSummaryA) setSummaryA(savedSummaryA);
         const savedFields = sessionStorage.getItem('loanlens_loan_fields');
-        if (savedFields) setLoanFields(JSON.parse(savedFields));
+        if (savedFields) {
+          let parsedFields = JSON.parse(savedFields);
+          if (savedSummaryA) {
+            parsedFields = mergeFieldsWithSummary(parsedFields, savedSummaryA);
+          }
+          setLoanFields(parsedFields);
+          sessionStorage.setItem('loanlens_loan_fields', JSON.stringify(parsedFields));
+        } else if (savedSummaryA) {
+          const parsedFromSum = parseFieldsFromSummary(savedSummaryA);
+          if (Object.keys(parsedFromSum).length > 0) {
+            setLoanFields(parsedFromSum);
+            sessionStorage.setItem('loanlens_loan_fields', JSON.stringify(parsedFromSum));
+          }
+        }
         const savedRisks = sessionStorage.getItem('loanlens_risk_flags');
         if (savedRisks) setRiskFlags(JSON.parse(savedRisks));
       } else {
@@ -102,10 +174,11 @@ export default function Home() {
           ]);
           const sumText = sumRes.summary || 'Summary could not be generated. Please use the Ask LoanLens tab to query your agreement.';
           setSummaryA(sumText);
-          setLoanFields(fieldsRes);
+          const finalFields = mergeFieldsWithSummary(fieldsRes, sumText);
+          setLoanFields(finalFields);
           if (typeof window !== 'undefined') {
             sessionStorage.setItem('loanlens_summary_a', sumText);
-            sessionStorage.setItem('loanlens_loan_fields', JSON.stringify(fieldsRes));
+            sessionStorage.setItem('loanlens_loan_fields', JSON.stringify(finalFields));
           }
         } catch (err) {
           console.error('Summary/fields error:', err);

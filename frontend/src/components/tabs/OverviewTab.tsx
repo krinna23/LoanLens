@@ -59,7 +59,7 @@ export default function OverviewTab({
   const lowRisk = riskFlags.filter(r => r.risk_level === 'LOW').length;
   const hasRisks = riskFlags.length > 0;
 
-  const isNotSpecified = (val?: string) => !val || val === 'Not specified';
+  const isNotSpecified = (val?: string) => !val || val === 'Not specified' || val.toLowerCase().includes('could not extract');
 
   return (
     <div className="space-y-6">

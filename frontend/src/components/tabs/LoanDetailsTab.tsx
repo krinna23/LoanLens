@@ -27,7 +27,7 @@ interface LoanDetailsTabProps {
 }
 
 export default function LoanDetailsTab({ loanFields, loadingFields }: LoanDetailsTabProps) {
-  const isNotSpecified = (val?: string) => !val || val === 'Not specified';
+  const isNotSpecified = (val?: string) => !val || val === 'Not specified' || val.toLowerCase().includes('could not extract');
 
   const renderRow = (label: string, value?: string) => (
     <div className="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-50 last:border-0 gap-1">
