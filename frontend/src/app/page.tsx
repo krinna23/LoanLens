@@ -18,19 +18,26 @@ function parseFieldsFromSummary(summary: string): Record<string, string> {
   const patterns: [string, RegExp][] = [
     ['loan_amount', /[-*]\s*\*{0,2}Loan Amount:\*{0,2}\s*([^\n\r]+)/i],
     ['interest_rate', /[-*]\s*\*{0,2}Interest Rate:\*{0,2}\s*([^\n\r]+)/i],
+    ['interest_type', /[-*]\s*\*{0,2}Interest Type:\*{0,2}\s*([^\n\r]+)/i],
     ['tenure', /[-*]\s*\*{0,2}Tenure:\*{0,2}\s*([^\n\r]+)/i],
     ['emi', /[-*]\s*\*{0,2}EMI:\*{0,2}\s*([^\n\r]+)/i],
     ['loan_type', /[-*]\s*\*{0,2}Loan Type:\*{0,2}\s*([^\n\r]+)/i],
     ['disbursement_mode', /[-*]\s*\*{0,2}Disbursement Mode:\*{0,2}\s*([^\n\r]+)/i],
+    ['insurance', /[-*]\s*\*{0,2}Insurance:\*{0,2}\s*([^\n\r]+)/i],
     ['prepayment_allowed', /[-*]\s*\*{0,2}Prepayment Allowed:\*{0,2}\s*([^\n\r]+)/i],
     ['prepayment_charges', /[-*]\s*\*{0,2}Prepayment Penalty:\*{0,2}\s*([^\n\r]+)/i],
     ['lock_in_period', /[-*]\s*\*{0,2}Lock-in Period:\*{0,2}\s*([^\n\r]+)/i],
+    ['collateral', /[-*]\s*\*{0,2}Collateral:\*{0,2}\s*([^\n\r]+)/i],
+    ['security_guarantee', /[-*]\s*\*{0,2}(?:Security|Guarantee|Security \/ Guarantee):\*{0,2}\s*([^\n\r]+)/i],
+    ['default_conditions', /[-*]\s*\*{0,2}Default Conditions:\*{0,2}\s*([^\n\r]+)/i],
+    ['rate_reset_conditions', /[-*]\s*\*{0,2}Rate Reset Conditions:\*{0,2}\s*([^\n\r]+)/i],
+    ['repayment_conditions', /[-*]\s*\*{0,2}(?:Repayment Conditions|Repayment):\*{0,2}\s*([^\n\r]+)/i],
   ];
 
   for (const [key, regex] of patterns) {
     const match = summary.match(regex);
     if (match && match[1]) {
-      let val = match[1].replace(/^\*+|\*+$/g, '').trim();
+      const val = match[1].replace(/^\*+|\*+$/g, '').trim();
       if (val && !val.toLowerCase().includes('not specified in the agreement')) {
         fields[key] = val;
       }
@@ -86,6 +93,7 @@ export default function Home() {
 
   const [riskFlags, setRiskFlags] = useState<any[]>([]);
   const [riskLoading, setRiskLoading] = useState(false);
+  const [riskError, setRiskError] = useState<string | null>(null);
 
   const [activeTab, setActiveTab] = useState('overview');
   const [chatMode, setChatMode] = useState<'A' | 'B'>('A');
@@ -130,23 +138,59 @@ export default function Home() {
 
   useEffect(() => {
     if (!docA || !sessionId) return;
+    let isSubscribed = true;
+    let lastCount = -1;
+    let stablePolls = 0;
+    let interval: NodeJS.Timeout | null = null;
+
     const fetchRisk = async () => {
       try {
-        const data = await getRiskSummary(sessionId);
-        setRiskFlags(data);
-        if (typeof window !== 'undefined' && data?.length) {
-          sessionStorage.setItem('loanlens_risk_flags', JSON.stringify(data));
+        const data = await getRiskSummary(sessionId, docA?.id);
+        if (!isSubscribed) return;
+        if (Array.isArray(data)) {
+          setRiskFlags(data);
+          setRiskError(null);
+          if (typeof window !== 'undefined' && data.length > 0) {
+            sessionStorage.setItem('loanlens_risk_flags', JSON.stringify(data));
+          }
+          if (!summarizingA) {
+            setRiskLoading(false);
+            if (data.length === lastCount) {
+              stablePolls++;
+              // Allow up to 10 stable polls (~40s) so background targeted scan results are captured
+              if (stablePolls >= 10 && interval) {
+                clearInterval(interval);
+              }
+            } else {
+              stablePolls = 0;
+            }
+            lastCount = data.length;
+          }
         }
-      } catch {
-        // ignore for now
-      } finally { 
-        setRiskLoading(false); 
+      } catch (err: any) {
+        if (!isSubscribed) return;
+        console.error('Error fetching risk summary:', err);
+        setRiskError('Failed to fetch risk analysis.');
+        setRiskLoading(false);
       }
     };
+
     fetchRisk();
-    const interval = setInterval(fetchRisk, 6000);
-    return () => clearInterval(interval);
-  }, [docA, sessionId]);
+    interval = setInterval(fetchRisk, 4000);
+
+    // Re-fetch immediately when user switches to 'risks' tab
+    const handleVisibilityOrTab = () => {
+      fetchRisk();
+    };
+    window.addEventListener('focus', handleVisibilityOrTab);
+
+    return () => {
+      isSubscribed = false;
+      if (interval) clearInterval(interval);
+      window.removeEventListener('focus', handleVisibilityOrTab);
+    };
+  }, [docA, sessionId, summarizingA, activeTab]);
+
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>, label: 'A' | 'B') => {
     if (!e.target.files?.length || !sessionId) return;
@@ -167,30 +211,54 @@ export default function Home() {
         setSummarizingA(true);
         setLoadingFields(true);
         setRiskLoading(true);
+        setRiskError(null);
+        setRiskFlags([]);
+
         try {
-          const [sumRes, fieldsRes] = await Promise.all([
+          const [sumResult, fieldsResult] = await Promise.allSettled([
             summarizeAgreement(sessionId, 'A'),
             extractLoanFields(sessionId, 'A'),
           ]);
-          const sumText = sumRes.summary || 'Summary could not be generated. Please use the Ask LoanLens tab to query your agreement.';
+
+          let sumText = 'Summary could not be generated. Please use the Ask LoanLens tab to query your agreement.';
+          if (sumResult.status === 'fulfilled' && sumResult.value?.summary) {
+            sumText = sumResult.value.summary;
+          }
           setSummaryA(sumText);
-          const finalFields = mergeFieldsWithSummary(fieldsRes, sumText);
-          setLoanFields(finalFields);
-          if (typeof window !== 'undefined') {
-            sessionStorage.setItem('loanlens_summary_a', sumText);
-            sessionStorage.setItem('loanlens_loan_fields', JSON.stringify(finalFields));
+
+          let finalFields: any = null;
+          if (fieldsResult.status === 'fulfilled' && fieldsResult.value) {
+            finalFields = mergeFieldsWithSummary(fieldsResult.value, sumText);
+          } else {
+            finalFields = parseFieldsFromSummary(sumText);
+          }
+
+          if (finalFields && Object.keys(finalFields).length > 0) {
+            setLoanFields(finalFields);
+            if (typeof window !== 'undefined') {
+              sessionStorage.setItem('loanlens_summary_a', sumText);
+              sessionStorage.setItem('loanlens_loan_fields', JSON.stringify(finalFields));
+            }
+          }
+
+          // Immediate risk fetch after summary is ready
+          try {
+            const riskData = await getRiskSummary(sessionId, newDocA.id);
+            if (Array.isArray(riskData)) {
+              setRiskFlags(riskData);
+              if (typeof window !== 'undefined' && riskData.length > 0) {
+                sessionStorage.setItem('loanlens_risk_flags', JSON.stringify(riskData));
+              }
+            }
+          } catch (rErr) {
+            console.error('Immediate risk check error:', rErr);
           }
         } catch (err) {
           console.error('Summary/fields error:', err);
-          const fallback = 'Summary could not be generated. You can still use Ask LoanLens to query your agreement.';
-          setSummaryA(fallback);
-          setLoanFields(null);
-          if (typeof window !== 'undefined') {
-            sessionStorage.setItem('loanlens_summary_a', fallback);
-          }
         } finally {
           setSummarizingA(false);
           setLoadingFields(false);
+          setRiskLoading(false);
         }
       } else {
         const newDocB = { filename: file.name, ...res.document };
@@ -213,7 +281,7 @@ export default function Home() {
   const tabs = [
     { id: 'overview', label: 'Overview', icon: <LayoutDashboard size={16} />, requiresDocB: false },
     { id: 'risks', label: 'Risks', icon: <ShieldAlert size={16} />, requiresDocB: false },
-    { id: 'details', label: 'Loan Details', icon: <FileText size={16} />, requiresDocB: false },
+    { id: 'details', label: 'Agreement Terms', icon: <FileText size={16} />, requiresDocB: false },
     { id: 'financial', label: 'Financial Analysis', icon: <Calculator size={16} />, requiresDocB: false },
     { id: 'compare', label: 'Compare', icon: <Scale size={16} />, requiresDocB: true },
     { id: 'ask', label: 'Ask LoanLens', icon: <MessageSquare size={16} />, requiresDocB: false },
@@ -316,7 +384,6 @@ export default function Home() {
               {tab.id === 'risks' && highRiskCount > 0 && (
                 <span className="bg-red-100 text-red-700 text-xs font-bold px-1.5 py-0.5 rounded-full">{highRiskCount}</span>
               )}
-              {tab.id === 'compare' && !docB && <span className="text-xs text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded-full font-medium">Compare</span>}
             </button>
           ))}
         </nav>
@@ -333,14 +400,16 @@ export default function Home() {
               summarizingA={summarizingA}
               docAName={docA?.filename || "Document A"}
               riskFlags={riskFlags}
+              riskLoading={riskLoading}
+              riskError={riskError}
               onNavigate={setActiveTab}
             />
           </div>
           <div className={activeTab === 'risks' ? 'block' : 'hidden'}>
-            <RisksTab riskFlags={riskFlags} loading={riskLoading} />
+            <RisksTab riskFlags={riskFlags} loading={riskLoading} error={riskError} />
           </div>
           <div className={activeTab === 'details' ? 'block' : 'hidden'}>
-            <LoanDetailsTab loanFields={loanFields} loadingFields={loadingFields} />
+            <LoanDetailsTab loanFields={loanFields} loadingFields={loadingFields} sessionId={sessionId} />
           </div>
           <div className={activeTab === 'financial' ? 'block' : 'hidden'}>
             <FinancialAnalysisTab sessionId={sessionId} loanFields={loanFields} />

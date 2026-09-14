@@ -1,23 +1,49 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 
 from db.database import get_db
 from db.models import ClauseRiskFlag, LoanComparison
 from models.schemas import RiskFlagOut, ComparisonFieldOut
 from services.vector_store import get_agreement_collection_name, get_collection
 from services.comparison_engine import extract_loan_fields, build_comparison_rows, generate_comparison_recommendation
+from services.risk_classifier import are_similar_risks
 from utils.helpers import generate_id
 
 router = APIRouter()
 
 
 @router.get("/risk_summary/{session_id}", response_model=List[RiskFlagOut])
-def get_risk_summary(session_id: str, db: Session = Depends(get_db)):
-    flags = db.query(ClauseRiskFlag).filter(
-        ClauseRiskFlag.session_id == session_id
-    ).order_by(ClauseRiskFlag.created_at.desc()).all()
-    return [RiskFlagOut.model_validate(f) for f in flags]
+def get_risk_summary(
+    session_id: str,
+    document_id: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    query = db.query(ClauseRiskFlag).filter(ClauseRiskFlag.session_id == session_id)
+    if document_id:
+        from sqlalchemy import or_
+        query = query.filter(
+            or_(
+                ClauseRiskFlag.document_id == document_id,
+                ClauseRiskFlag.document_id == "",
+                ClauseRiskFlag.document_id.is_(None)
+            )
+        )
+    flags = query.order_by(ClauseRiskFlag.created_at.desc()).all()
+
+    # Semantic deduplication pass so the API never returns duplicate risks
+    deduped_flags = []
+    seen_descriptions: List[str] = []
+    for f in flags:
+        desc = f.deviation_description or ""
+        if not desc or desc in ("No deviation found", "Could not automatically assess this clause."):
+            continue
+        if any(are_similar_risks(desc, seen) for seen in seen_descriptions):
+            continue
+        seen_descriptions.append(desc)
+        deduped_flags.append(f)
+
+    return [RiskFlagOut.model_validate(f) for f in deduped_flags]
 
 
 @router.post("/comparison/{session_id}/generate")

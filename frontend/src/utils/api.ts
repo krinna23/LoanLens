@@ -40,8 +40,11 @@ export async function generateComparison(sessionId: string) {
   return res.json();
 }
 
-export async function getRiskSummary(sessionId: string) {
-  const res = await fetch(`${API_BASE_URL}/risk_summary/${sessionId}`);
+export async function getRiskSummary(sessionId: string, documentId?: string) {
+  const url = documentId
+    ? `${API_BASE_URL}/risk_summary/${sessionId}?document_id=${documentId}`
+    : `${API_BASE_URL}/risk_summary/${sessionId}`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error("Failed to fetch risk summary");
   return res.json();
 }
@@ -91,5 +94,11 @@ export async function getPrepaymentScenario(data: {
 export async function getRegulatoryStatus(sessionId: string) {
   const res = await fetch(`${API_BASE_URL}/regulatory_status/${sessionId}`);
   if (!res.ok) throw new Error("Failed to fetch regulatory status");
+  return res.json();
+}
+
+export async function getClauseExplanations(sessionId: string, label: "A" | "B" = "A") {
+  const res = await fetch(`${API_BASE_URL}/clause_explanations/${sessionId}?agreement_label=${label}`);
+  if (!res.ok) throw new Error("Failed to fetch clause explanations");
   return res.json();
 }

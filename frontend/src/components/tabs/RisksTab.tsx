@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, ShieldAlert, ShieldQuestion, Loader2 } from 'lucide-react';
+import { ShieldCheck, Loader2 } from 'lucide-react';
 
 interface RiskFlag {
   id: string;
@@ -15,6 +15,7 @@ interface RiskFlag {
 interface RisksTabProps {
   riskFlags: RiskFlag[];
   loading: boolean;
+  error?: string | null;
 }
 
 function ClauseEvidence({ text }: { text: string }) {
@@ -48,7 +49,7 @@ function ClauseEvidence({ text }: { text: string }) {
   );
 }
 
-export default function RisksTab({ riskFlags, loading }: RisksTabProps) {
+export default function RisksTab({ riskFlags, loading, error }: RisksTabProps) {
   const highRisk = riskFlags.filter(r => r.risk_level === 'HIGH').length;
   const medRisk = riskFlags.filter(r => r.risk_level === 'MEDIUM').length;
   const lowRisk = riskFlags.filter(r => r.risk_level === 'LOW').length;
@@ -92,10 +93,12 @@ export default function RisksTab({ riskFlags, loading }: RisksTabProps) {
         <h2 className="text-xl font-bold text-gray-900 mb-4">Risk Overview</h2>
         
         {loading ? (
-          <div className="flex items-center gap-3 text-gray-600 py-4">
-            <Loader2 className="animate-spin" size={20} />
-            <span>Scanning clauses...</span>
+          <div className="flex items-center gap-3 text-blue-600 py-4 font-medium">
+            <Loader2 className="animate-spin text-blue-500" size={20} />
+            <span>Scanning agreement clauses for compliance risks...</span>
           </div>
+        ) : error ? (
+          <div className="text-sm text-red-500 py-2">{error}</div>
         ) : (
           <div className="space-y-4">
             <div className="flex items-center gap-4">
@@ -135,10 +138,21 @@ export default function RisksTab({ riskFlags, loading }: RisksTabProps) {
                 </span>
                 {flag.rbi_document_status && (
                   <span className={`px-2 py-1 rounded text-xs font-bold ${getRegStatusBadge(flag.rbi_document_status)}`}>
-                    {flag.rbi_document_status}
+                    {['WITHDRAWN', 'SUPERSEDED', 'HISTORICAL'].includes(flag.rbi_document_status) ? '⚠ ' : ''}
+                    Regulatory Status: {flag.rbi_document_status}
                   </span>
                 )}
               </div>
+
+              {['WITHDRAWN', 'SUPERSEDED', 'HISTORICAL'].includes(flag.rbi_document_status) && (
+                <div className="mb-3 text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-start gap-2">
+                  <span className="text-amber-600 font-bold text-sm leading-none">⚠</span>
+                  <div>
+                    <span className="font-semibold">Regulatory Notice: </span>
+                    <span>This RBI guidance has been withdrawn and is not treated as a current regulatory requirement.</span>
+                  </div>
+                </div>
+              )}
               
               <h3 className="font-bold text-gray-900 mb-1">{flag.deviation_description || "Potential Clause Issue"}</h3>
               <p className="text-gray-600 text-sm mb-4">{flag.reason}</p>
