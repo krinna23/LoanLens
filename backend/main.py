@@ -16,8 +16,8 @@ Base.metadata.create_all(bind=engine)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    get_model()
-    get_reranker()
+    # get_model()
+    # get_reranker()
     yield
 
 
