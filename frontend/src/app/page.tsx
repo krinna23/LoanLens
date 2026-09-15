@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { ShieldCheck, UploadCloud, CheckCircle2, ArrowRightLeft, Loader2, LayoutDashboard, ShieldAlert, FileText, Calculator, Scale, MessageSquare } from 'lucide-react';
+import { ShieldCheck, UploadCloud, CheckCircle2, ArrowRightLeft, Loader2, LayoutDashboard, ShieldAlert, FileText, Calculator, Scale, MessageSquare, ArrowLeft } from 'lucide-react';
 import { uploadAgreement, summarizeAgreement, getRiskSummary, extractLoanFields } from '@/utils/api';
 import OverviewTab from '@/components/tabs/OverviewTab';
 import RisksTab from '@/components/tabs/RisksTab';
@@ -276,6 +276,27 @@ export default function Home() {
     }
   };
 
+  const handleBackToHome = () => {
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.removeItem('loanlens_doc_a');
+        sessionStorage.removeItem('loanlens_doc_b');
+        sessionStorage.removeItem('loanlens_summary_a');
+        sessionStorage.removeItem('loanlens_loan_fields');
+        sessionStorage.removeItem('loanlens_risk_flags');
+      } catch (e) {
+        console.error('Failed to clear session storage:', e);
+      }
+    }
+    setDocA(null);
+    setDocB(null);
+    setSummaryA(null);
+    setLoanFields(null);
+    setRiskFlags([]);
+    setRiskError(null);
+    setActiveTab('overview');
+  };
+
   const highRiskCount = riskFlags.filter(f => f.risk_level === 'HIGH').length;
 
   const tabs = [
@@ -328,13 +349,24 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between shadow-sm shrink-0 z-10">
-        <div className="flex items-center gap-3">
-          <div className="bg-blue-600 text-white p-2 rounded-lg">
-            <ShieldCheck size={22} strokeWidth={2.5} />
-          </div>
-          <div>
-            <h1 className="text-lg font-bold font-heading text-gray-900">LoanLens</h1>
-            <p className="text-[10px] font-semibold text-blue-600 uppercase tracking-widest">Loan Analysis Platform</p>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={handleBackToHome}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+            title="Return to home / upload screen"
+          >
+            <ArrowLeft size={14} />
+            <span>Back to Home</span>
+          </button>
+          <div className="h-6 w-px bg-gray-200 hidden sm:block" />
+          <div className="flex items-center gap-3">
+            <div className="bg-blue-600 text-white p-2 rounded-lg">
+              <ShieldCheck size={22} strokeWidth={2.5} />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold font-heading text-gray-900">LoanLens</h1>
+              <p className="text-[10px] font-semibold text-blue-600 uppercase tracking-widest">Loan Analysis Platform</p>
+            </div>
           </div>
         </div>
 
