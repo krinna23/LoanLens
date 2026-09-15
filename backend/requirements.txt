@@ -16,3 +16,4 @@ python-multipart==0.0.12
 python-dotenv==1.0.1
 sse-starlette==2.1.0
 pydantic==2.13.4
+psycopg2-binary==2.9.9
