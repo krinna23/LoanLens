@@ -189,7 +189,7 @@ These checks help users review whether important financial details have been ide
 
 ## System Architecture
 
-``
+```
                     ┌──────────────────────┐
                     │       User           │
                     └──────────┬───────────┘
