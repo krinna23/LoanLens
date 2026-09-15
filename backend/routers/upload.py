@@ -167,10 +167,14 @@ Required output format:
 - **Conditions:** (any conditions mentioned)
 
 ### Risks & Red Flags
-(List 3–6 notable risks or clauses the borrower should be aware of. Cover HIGH, MEDIUM and LOW severity risks. If none, write: No significant risks identified in the reviewed excerpts.)
-1. **High Risk —** (brief description of a serious issue)
-2. **Medium Risk —** (brief description of a moderate concern)
-3. **Low Risk —** (brief description of a minor concern)
+(List notable risks from the agreement text. Use ONLY these severity labels and criteria:
+- HIGH RISK: Clause explicitly violates a mandatory RBI prohibition (e.g., compounding penal interest, illegal foreclosure charges on floating-rate loans, discriminatory fees, no KFS provided)
+- MEDIUM RISK: Missing mandatory disclosures, charges above market norms, ambiguous rate reset or repricing terms, unilateral lender modification rights
+- LOW RISK: Minor contractual concerns, standard market charges, informational gaps not impacting regulatory compliance
+Format each as: **[LEVEL] Risk —** [one-sentence description of the specific clause or issue])
+1. **High Risk —** (brief description if applicable, else skip)
+2. **Medium Risk —** (brief description if applicable)
+3. **Low Risk —** (brief description if applicable)
 
 ### Important Things to Check
 - (3–5 specific things the borrower should verify before signing)
@@ -185,7 +189,7 @@ AGREEMENT EXCERPTS:
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": summary_prompt},
             ],
-            temperature=0.2,
+            temperature=0.0,
             max_tokens=2500,
         )
         summary_text = summary_resp.choices[0].message.content.strip()
@@ -403,7 +407,7 @@ def _run_targeted_risk_scan(session_id: str, agreement_label: str, doc_id: str):
             "cross default acceleration clause entire loan due",
         ]
 
-        scanned_pairs: set = set()
+        scanned_pairs: list = []
         flags_added = 0
 
         for tq in target_queries:
@@ -419,7 +423,7 @@ def _run_targeted_risk_scan(session_id: str, agreement_label: str, doc_id: str):
                     clause_key = clause_text[:80]
                     if clause_key in scanned_pairs:
                         continue
-                    scanned_pairs.add(clause_key)
+                    scanned_pairs.append(clause_key)
 
                     # Per-clause RBI matching: embed THIS clause and find its best RBI guideline
                     try:
